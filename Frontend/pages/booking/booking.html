@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookings | Horizon Travel</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --panel-alt: #eef4ff;
+        --primary: #2354d4;
+        --primary-dark: #153eab;
+        --secondary: #1d3557;
+        --accent: #ffb703;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #dfe7f5;
+        --success: #0f9f6e;
+        --shadow: 0 18px 40px rgba(20, 48, 102, 0.12);
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #edf4ff 0%, #f7f9fc 18%, #ffffff 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(146, 166, 205, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 78px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--secondary);
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary) 0%, #74a9ff 100%);
+        color: white;
+        font-size: 1.3rem;
+        box-shadow: var(--shadow);
+      }
+
+      .menu {
+        display: flex;
+        gap: 28px;
+        color: var(--secondary);
+        font-size: 0.96rem;
+      }
+
+      .menu a {
+        opacity: 0.8;
+      }
+
+      .button,
+      button {
+        appearance: none;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .button:hover,
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .nav-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        background: var(--primary);
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 14px 26px rgba(35, 84, 212, 0.25);
+      }
+
+      .hero {
+        padding: 52px 0 28px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.9fr;
+        gap: 30px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(35, 84, 212, 0.08);
+        color: var(--primary);
+        border: 1px solid rgba(35, 84, 212, 0.08);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(2.4rem, 5vw, 4.5rem);
+        line-height: 1.04;
+        color: var(--secondary);
+        letter-spacing: -0.04em;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 620px;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary) 0%, #4f7cff 100%);
+        color: #fff;
+        padding: 15px 24px;
+        font-weight: 700;
+        box-shadow: 0 18px 28px rgba(35, 84, 212, 0.25);
+      }
+
+      .secondary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        color: var(--secondary);
+        padding: 15px 24px;
+        border: 1px solid var(--border);
+        font-weight: 700;
+      }
+
+      .stats {
+        display: flex;
+        gap: 42px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+      }
+
+      .stat {
+        min-width: 100px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.7rem;
+        color: var(--secondary);
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .booking-panel {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(248,250,255,0.98));
+        border: 1px solid rgba(169, 185, 222, 0.8);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+
+      .booking-panel .image-wrap {
+        height: 420px;
+        border-radius: 22px;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(160deg, #dfeaff 0%, #cadcfb 100%);
+      }
+
+      .booking-panel .image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .badge {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        background: rgba(18, 52, 111, 0.9);
+        color: white;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 16px 24px rgba(17, 35, 56, 0.18);
+      }
+
+      .badge strong {
+        display: block;
+        font-size: 1.2rem;
+      }
+
+      .badge span {
+        font-size: 0.74rem;
+        opacity: 0.8;
+      }
+
+      .content {
+        padding: 22px 0 80px;
+      }
+
+      .booking-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 26px;
+        box-shadow: 0 20px 42px rgba(41, 61, 116, 0.08);
+        padding: 28px;
+      }
+
+      .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      .booking-header h2 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3vw, 2.7rem);
+        color: var(--secondary);
+      }
+
+      .chip {
+        display: inline-block;
+        background: rgba(15, 159, 110, 0.08);
+        color: var(--success);
+        padding: 9px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 159, 110, 0.12);
+        font-weight: 700;
+        font-size: 0.78rem;
+      }
+
+      .booking-form {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 0.82rem;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 14px 15px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #f9fbff;
+        color: var(--secondary);
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      .field textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      .booking-footer {
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .reset-btn {
+        background: white;
+        color: var(--secondary);
+        border: 1px solid var(--border);
+        padding: 16px 20px;
+        font-weight: 700;
+      }
+
+      .form-message {
+        min-height: 1.5em;
+        margin: 12px 0 0;
+        color: var(--success);
+        font-weight: 700;
+      }
+
+      .summary {
+        color: var(--muted);
+      }
+
+      .summary strong {
+        font-size: 2rem;
+        display: block;
+        color: var(--secondary);
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, var(--secondary) 0%, #254e94 100%);
+        color: white;
+        padding: 16px 28px;
+        font-weight: 700;
+        box-shadow: 0 18px 28px rgba(29, 53, 87, 0.2);
+      }
+
+      .offers {
+        padding-top: 18px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .section-head h3 {
+        margin: 0;
+        color: var(--secondary);
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+      }
+
+      .section-head a {
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      .offer-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 24px;
+      }
+
+      .offer-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 16px 32px rgba(34, 52, 84, 0.06);
+      }
+
+      .offer-image {
+        height: 220px;
+        overflow: hidden;
+      }
+
+      .offer-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .offer-body {
+        padding: 18px 18px 22px;
+      }
+
+      .offer-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .offer-body h4 {
+        margin: 0 0 8px;
+        color: var(--secondary);
+        font-size: 1.25rem;
+      }
+
+      .offer-body p {
+        margin: 0 0 16px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .offer-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .price {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--secondary);
+      }
+
+      .price small {
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .mini-btn {
+        background: rgba(35, 84, 212, 0.08);
+        color: var(--primary);
+        font-weight: 700;
+        padding: 10px 14px;
+      }
+
+      .management { margin-bottom: 28px; }
+      .management-title { margin: 0 0 18px; color: var(--secondary); font-size: clamp(1.8rem, 3vw, 2.5rem); }
+      .management-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+      .management-stat, .records-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 12px 28px rgba(41, 61, 116, 0.06); }
+      .management-stat { padding: 20px; }
+      .management-stat span { display: block; color: var(--muted); font-size: .88rem; }
+      .management-stat strong { display: block; margin-top: 8px; color: var(--secondary); font-size: 1.8rem; }
+      .records-card { overflow: hidden; }
+      .records-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 18px 20px; border-bottom: 1px solid var(--border); }
+      .records-toolbar h3 { margin: 0; color: var(--secondary); }
+      .records-filters { display: flex; gap: 10px; }
+      .records-filters input, .records-filters select { min-height: 42px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; color: var(--secondary); background: #f9fbff; font: inherit; }
+      .table-wrap { overflow-x: auto; }
+      .booking-table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+      .booking-table th, .booking-table td { padding: 14px 18px; border-bottom: 1px solid #edf1f8; }
+      .booking-table th { color: var(--muted); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+      .booking-table td { color: var(--secondary); font-size: .9rem; }
+      .booking-table tbody tr:last-child td { border-bottom: 0; }
+      .status { display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+      .status.confirmed { color: #08744f; background: #e7f8f0; }
+      .status.pending { color: #946200; background: #fff5d8; }
+      .status.cancelled { color: #a33333; background: #ffebeb; }
+      .empty-row { padding: 24px !important; color: var(--muted) !important; text-align: center; }
+
+      @media (max-width: 980px) {
+        .management-stats { grid-template-columns: repeat(2, 1fr); }
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .booking-form {
+          grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+
+        .offer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .records-toolbar, .records-filters { flex-direction: column; align-items: stretch; }
+        .management-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+        .management-stat { padding: 14px; }
+        .management-stat strong { font-size: 1.45rem; }
+        .menu {
+          display: none;
+        }
+
+        .nav {
+          gap: 12px;
+        }
+
+        .booking-form {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head,
+        .booking-header,
+        .booking-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .button,
+        .primary-btn,
+        .secondary-btn,
+        .submit-btn,
+        .nav-cta {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <a href="#" class="brand" aria-label="Horizon Travel home">
+          <span class="brand-mark">✦</span>
+          <span>HORIZON</span>
+        </a>
+
+        <nav class="menu" aria-label="Main navigation">
+          <a href="#">Destinations</a>
+          <a href="#">Stays</a>
+          <a href="#">Experiences</a>
+          <a href="#">Reviews</a>
+          <a href="#">Support</a>
+        </nav>
+
+        <a href="#booking" class="button nav-cta">Book a trip</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Hotel operations</span>
+            <h1>Manage every guest stay with ease.</h1>
+            <p class="lead">
+              Review reservations, track arrivals, and create bookings from one clear workspace.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#booking" class="button primary-btn">Create booking</a>
+              <a href="#reservations" class="button secondary-btn">View reservations</a>
+            </div>
+
+            <div class="stats" aria-label="Hotel booking metrics">
+              <div class="stat">
+                <strong>92%</strong>
+                <span>occupancy this week</span>
+              </div>
+              <div class="stat">
+                <strong>24</strong>
+                <span>arrivals today</span>
+              </div>
+              <div class="stat">
+                <strong>08</strong>
+                <span>rooms available</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-panel" aria-label="Featured trip preview">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80" alt="Beach resort" />
+              <div class="badge">
+                <strong>$1,240</strong>
+                <span>7-night seaside escape</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content" id="booking">
+        <div class="container">
+          <section class="management" id="reservations" aria-labelledby="reservations-title">
+            <h2 class="management-title" id="reservations-title">Bookings overview</h2>
+            <div class="management-stats" aria-label="Booking summary">
+              <div class="management-stat"><span>Total bookings</span><strong>128</strong></div>
+              <div class="management-stat"><span>Confirmed</span><strong>96</strong></div>
+              <div class="management-stat"><span>Pending</span><strong>18</strong></div>
+              <div class="management-stat"><span>Expected revenue</span><strong>$24,860</strong></div>
+            </div>
+            <div class="records-card">
+              <div class="records-toolbar">
+                <h3>Recent reservations</h3>
+                <div class="records-filters">
+                  <input id="bookingSearch" type="search" placeholder="Search guest or booking ID" aria-label="Search bookings" />
+                  <select id="statusFilter" aria-label="Filter bookings by status">
+                    <option value="all">All statuses</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="booking-table">
+                  <thead><tr><th>Booking ID</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th></tr></thead>
+                  <tbody id="bookingRows">
+                    <tr data-status="confirmed"><td>#BK-1048</td><td>Amelia Johnson</td><td>Deluxe King · 204</td><td>Jun 18, 2025</td><td>Jun 21, 2025</td><td>$720</td><td><span class="status confirmed">Confirmed</span></td></tr>
+                    <tr data-status="pending"><td>#BK-1047</td><td>Noah Williams</td><td>Ocean Suite · 508</td><td>Jun 19, 2025</td><td>Jun 23, 2025</td><td>$1,360</td><td><span class="status pending">Pending</span></td></tr>
+                    <tr data-status="confirmed"><td>#BK-1046</td><td>Sofia Martinez</td><td>Standard Queen · 116</td><td>Jun 20, 2025</td><td>Jun 22, 2025</td><td>$440</td><td><span class="status confirmed">Confirmed</span></td></tr>
+                    <tr data-status="cancelled"><td>#BK-1045</td><td>Liam Chen</td><td>Garden Suite · 312</td><td>Jun 21, 2025</td><td>Jun 24, 2025</td><td>$870</td><td><span class="status cancelled">Cancelled</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          <div class="booking-card">
+            <div class="booking-header">
+              <h2 id="booking">Create a booking</h2>
+              <span class="chip">New reservation</span>
+            </div>
+
+            <form class="booking-form" id="bookingForm" action="../Backend/bookings.php" method="post">
+              <div class="field">
+                <label for="destination">Destination</label>
+                <select id="destination" name="destination" required>
+                  <option>Maldives</option>
+                  <option>Kyoto</option>
+                  <option>Swiss Alps</option>
+                  <option>Amalfi Coast</option>
+                  <option>Banff</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="checkin">Check-in</label>
+                <input id="checkin" name="checkin" type="date" required />
+              </div>
+
+              <div class="field">
+                <label for="checkout">Check-out</label>
+                <input id="checkout" name="checkout" type="date" required />
+              </div>
+
+              <div class="field">
+                <label for="guests">Guests</label>
+                <select id="guests" name="guests" required>
+                  <option>2 Guests</option>
+                  <option>3 Guests</option>
+                  <option>4 Guests</option>
+                  <option>5 Guests</option>
+                  <option>6 Guests</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="stay">Accommodation</label>
+                <select id="stay" name="stay" required>
+                  <option>Ocean Villa</option>
+                  <option>Garden Suite</option>
+                  <option>Signature Hotel</option>
+                  <option>Mountain Lodge</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="package">Package</label>
+                <select id="package" name="package" required>
+                  <option>Breakfast Included</option>
+                  <option>Half Board</option>
+                  <option>All Inclusive</option>
+                  <option>Adventure Add-on</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="transfer">Airport transfer</label>
+                <select id="transfer" name="transfer" required>
+                  <option>Private transfer</option>
+                  <option>Shared shuttle</option>
+                  <option>No transfer</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="promo">Promo code</label>
+                <input id="promo" name="promo" type="text" placeholder="Optional" />
+              </div>
+
+              <div class="field full">
+                <label for="notes">Trip notes</label>
+                <textarea id="notes" name="notes" placeholder="Tell us about your preferences, special requests, or celebration plans..."></textarea>
+              </div>
+            </form>
+
+            <div class="booking-footer">
+              <div class="summary">
+                Estimated total
+                <strong id="estimatedTotal">$1,240</strong>
+              </div>
+
+              <div class="hero-actions">
+                <button type="reset" form="bookingForm" class="button reset-btn">Reset</button>
+                <button type="submit" form="bookingForm" class="button submit-btn">Reserve now</button>
+              </div>
+            </div>
+            <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="offers" id="offers">
+            <div class="section-head">
+              <h3>Featured room packages</h3>
+              <a href="#booking">Create a reservation</a>
+            </div>
+
+            <div class="offer-grid">
+              <article class="offer-card">
+                <div class="offer-image">
+                  <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80" alt="Mountain cabin" />
+                </div>
+                <div class="offer-body">
+                  <div class="offer-meta">
+                    <span>Swiss Alps</span>
+                    <span>4 nights</span>
+                  </div>
+                  <h4>Alpine Serenity</h4>
+                  <p>Luxury chalet with spa access, scenic train passes, and a private chef experience.</p>
+                  <div class="offer-footer">
+                    <div class="price">$980 <small>/ stay</small></div>
+                    <a href="#booking" class="button mini-btn">Select</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="offer-card">
+                <div class="offer-image">
+                  <img src="https://images.unsplash.com/photo-1493558103817-58b2924b5715?auto=format&fit=crop&w=900&q=80" alt="Beach resort" />
+                </div>
+                <div class="offer-body">
+                  <div class="offer-meta">
+                    <span>Amalfi Coast</span>
+                    <span>5 nights</span>
+                  </div>
+                  <h4>Coastal Escape</h4>
+                  <p>Oceanview suite, sunset cruise, and guided restaurant discovery in the old town.</p>
+                  <div class="offer-footer">
+                    <div class="price">$1,340 <small>/ stay</small></div>
+                    <a href="#booking" class="button mini-btn">Select</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="offer-card">
+                <div class="offer-image">
+                  <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=900&q=80" alt="Island resort" />
+                </div>
+                <div class="offer-body">
+                  <div class="offer-meta">
+                    <span>Maldives</span>
+                    <span>7 nights</span>
+                  </div>
+                  <h4>Lagoon Bliss</h4>
+                  <p>Waterfront villa with floating breakfast, snorkeling pass, and private sunset dining.</p>
+                  <div class="offer-footer">
+                    <div class="price">$2,180 <small>/ stay</small></div>
+                    <a href="#booking" class="button mini-btn">Select</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const toISODate = (date) => {
+        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return localDate.toISOString().split('T')[0];
+      };
+      const checkin = document.getElementById('checkin');
+      const checkout = document.getElementById('checkout');
+      const bookingForm = document.getElementById('bookingForm');
+      const estimatedTotal = document.getElementById('estimatedTotal');
+      const formMessage = document.getElementById('formMessage');
+      const destinationRates = {
+        Maldives: 260,
+        Kyoto: 180,
+        'Swiss Alps': 240,
+        'Amalfi Coast': 220,
+        Banff: 200
+      };
+      const accommodationRates = {
+        'Ocean Villa': 1.5,
+        'Garden Suite': 1.1,
+        'Signature Hotel': 1.25,
+        'Mountain Lodge': 1.2
+      };
+      const packageExtras = {
+        'Breakfast Included': 35,
+        'Half Board': 75,
+        'All Inclusive': 130,
+        'Adventure Add-on': 90
+      };
+      const transferExtras = {
+        'Private transfer': 120,
+        'Shared shuttle': 45,
+        'No transfer': 0
+      };
+
+      checkin.min = toISODate(today);
+      checkin.value = toISODate(today);
+
+      checkout.min = toISODate(tomorrow);
+      checkout.value = toISODate(tomorrow);
+
+      const updateEstimate = () => {
+        const start = new Date(`${checkin.value}T00:00:00`);
+        const end = new Date(`${checkout.value}T00:00:00`);
+        const nights = Math.max(1, Math.round((end - start) / 86400000) || 1);
+        const destination = bookingForm.elements.destination.value;
+        const stay = bookingForm.elements.stay.value;
+        const guests = Number.parseInt(bookingForm.elements.guests.value, 10) || 2;
+        const nightlyRate = (destinationRates[destination] || 200) * (accommodationRates[stay] || 1);
+        const extras = (packageExtras[bookingForm.elements.package.value] || 0) * nights
+          + (transferExtras[bookingForm.elements.transfer.value] || 0);
+        const total = Math.round((nightlyRate + Math.max(0, guests - 2) * 25) * nights + extras);
+        estimatedTotal.textContent = new Intl.NumberFormat('en-US', {
+          style: 'currency', currency: 'USD', maximumFractionDigits: 0
+        }).format(total);
+      };
+
+      checkin.addEventListener('change', () => {
+        const selected = new Date(`${checkin.value}T00:00:00`);
+        if (!Number.isNaN(selected.getTime())) {
+          const next = new Date(selected);
+          next.setDate(next.getDate() + 1);
+          checkout.min = toISODate(next);
+          if (!checkout.value || new Date(`${checkout.value}T00:00:00`) <= selected) {
+            checkout.value = toISODate(next);
+          }
+        }
+        updateEstimate();
+      });
+
+      checkout.addEventListener('change', updateEstimate);
+      bookingForm.addEventListener('change', updateEstimate);
+      checkout.addEventListener('change', () => checkout.setCustomValidity(''));
+      bookingForm.addEventListener('reset', () => {
+        window.setTimeout(() => {
+          checkin.value = toISODate(today);
+          checkout.min = toISODate(tomorrow);
+          checkout.value = toISODate(tomorrow);
+          formMessage.textContent = '';
+          updateEstimate();
+        }, 0);
+      });
+      bookingForm.addEventListener('submit', (event) => {
+        const start = new Date(`${checkin.value}T00:00:00`);
+        const end = new Date(`${checkout.value}T00:00:00`);
+        if (end <= start) {
+          event.preventDefault();
+          checkout.setCustomValidity('Check-out must be after check-in.');
+          checkout.reportValidity();
+          return;
+        }
+        checkout.setCustomValidity('');
+        formMessage.textContent = 'Submitting your booking request...';
+      });
+
+      const bookingRows = document.getElementById('bookingRows');
+      const bookingSearch = document.getElementById('bookingSearch');
+      const statusFilter = document.getElementById('statusFilter');
+      const filterBookings = () => {
+        const query = bookingSearch.value.trim().toLowerCase();
+        const status = statusFilter.value;
+        [...bookingRows.querySelectorAll('tr')].forEach((row) => {
+          const matchesText = row.textContent.toLowerCase().includes(query);
+          const matchesStatus = status === 'all' || row.dataset.status === status;
+          row.hidden = !(matchesText && matchesStatus);
+        });
+      };
+      bookingSearch.addEventListener('input', filterBookings);
+      statusFilter.addEventListener('change', filterBookings);
+
+      updateEstimate();
+    </script>
+  </body>
+</html>
