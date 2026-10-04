@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Haven | Home</title>
+    <meta name="description" content="Explore Hotel Haven's rooms and amenities, and send a booking request directly to our hotel team." />
+    <link rel="stylesheet" href="./css/variables.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+      :root {
+        --primary: #0f766e;
+        --primary-dark: #115e59;
+        --secondary: #f8fafc;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --accent: #fbbf24;
+        --card: #ffffff;
+        --shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      :focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: var(--text);
+        background: #f4f7fb;
+        line-height: 1.6;
+      }
+
+      a { text-decoration: none; color: inherit; }
+
+      img { max-width: 100%; display: block; }
+
+      .container {
+        width: min(1100px, 90%);
+        margin: 0 auto;
+      }
+
+      header {
+        background: linear-gradient(110deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.2)),
+          url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        min-height: 85vh;
+        color: white;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 0;
+        gap: 1rem;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        letter-spacing: 0.05em;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.95rem;
+      }
+
+      .nav-links a {
+        opacity: 0.9;
+        transition: opacity 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        opacity: 1;
+        text-decoration: underline;
+        text-underline-offset: 6px;
+      }
+
+      .nav-links .nav-action {
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        padding: 0.35rem 0.9rem;
+      }
+
+      .hero {
+        display: flex;
+        align-items: center;
+        min-height: 70vh;
+      }
+
+      .hero-content {
+        max-width: 620px;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        margin: 0 0 1rem;
+        line-height: 1.1;
+        text-shadow: 0 3px 18px rgba(0, 0, 0, 0.25);
+      }
+
+      .hero-content p {
+        font-size: 1.1rem;
+        max-width: 540px;
+        margin-bottom: 2rem;
+        color: rgba(255,255,255,0.9);
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--accent);
+        color: var(--text);
+        padding: 0.9rem 1.6rem;
+        border-radius: 999px;
+        font-weight: bold;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        background: #fcd34d;
+        box-shadow: 0 9px 22px rgba(15, 23, 42, 0.24);
+      }
+
+      section {
+        padding: 5rem 0;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+
+      .section-title h2 {
+        margin: 0 0 0.7rem;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        color: var(--primary-dark);
+      }
+
+      .section-title p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .intro-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 2.5rem;
+        align-items: center;
+      }
+
+      .intro-text h3 {
+        font-size: 2rem;
+        margin-top: 0;
+        color: var(--primary-dark);
+      }
+
+      .intro-text p {
+        color: var(--muted);
+      }
+
+      .intro-card {
+        background: var(--card);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .intro-card img {
+        height: 320px;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .services-grid,
+      .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2rem;
+      }
+
+      .service-card,
+      .room-card {
+        background: var(--card);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .service-card:hover,
+      .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.16);
+      }
+
+      .service-card {
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+
+      .service-icon {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        background: rgba(15, 118, 110, 0.1);
+        display: grid;
+        place-items: center;
+        color: var(--primary);
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+
+      .service-card h3,
+      .room-card h3 {
+        margin: 0 0 0.8rem;
+        color: var(--primary-dark);
+      }
+
+      .service-card p,
+      .room-card p {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .room-card img {
+        height: 250px;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .room-details {
+        padding: 1.5rem;
+      }
+
+      .price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+      }
+
+      .price span {
+        font-size: clamp(1.15rem, 2vw, 1.5rem);
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .contact-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .contact-box {
+        background: var(--card);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        padding: 2rem;
+      }
+
+      .contact-item {
+        margin-bottom: 1.3rem;
+      }
+
+      .contact-item strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: var(--primary-dark);
+      }
+
+      form {
+        display: grid;
+        gap: 1rem;
+      }
+
+      input, textarea, select {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 1px solid #dbe3ee;
+        border-radius: 10px;
+        font: inherit;
+        color: var(--text);
+        background: white;
+      }
+
+      input:focus, textarea:focus, select:focus {
+        border-color: var(--primary);
+        outline: 2px solid rgba(15, 118, 110, 0.18);
+      }
+
+      .booking-heading {
+        margin: 0 0 0.25rem;
+        color: var(--primary-dark);
+      }
+
+      .booking-note {
+        margin: 0 0 0.5rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      .btn-submit {
+        border: none;
+        cursor: pointer;
+      }
+
+      footer {
+        background: #0f172a;
+        color: white;
+        text-align: center;
+        padding: 1.5rem 0;
+      }
+
+      @media (max-width: 860px) {
+        .intro-grid,
+        .services-grid,
+        .rooms-grid,
+        .contact-wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          justify-content: flex-end;
+          flex-wrap: wrap;
+          gap: 0.6rem 1rem;
+        }
+
+        nav { align-items: flex-start; }
+      }
+
+      @media (max-width: 540px) {
+        section { padding: 3.5rem 0; }
+
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nav-links { justify-content: flex-start; }
+
+        .hero { min-height: 65vh; }
+
+        .contact-box { padding: 1.4rem; }
+
+        .price { align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav aria-label="Main navigation">
+          <div class="logo">Hotel Haven</div>
+          <div class="nav-links">
+            <a href="#intro">About</a>
+            <a href="#services">Services</a>
+            <a href="#rooms">Rooms</a>
+            <a href="#contact">Contact</a>
+            <a class="nav-action" href="pages/auth/login.html">Guest Login</a>
+          </div>
+        </nav>
+
+        <div class="hero">
+          <div class="hero-content">
+            <h1>Relax in Luxury</h1>
+            <p>
+              Experience refined comfort, warm hospitality, and memorable stays in the heart of the city.
+            </p>
+            <a class="btn" href="pages/booking/booking.html">Book Your Stay</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="intro">
+        <div class="container intro-grid">
+          <div class="intro-text">
+            <h2>Hotel Introduction</h2>
+            <p>
+              Hotel Haven is a contemporary boutique hotel designed for guests seeking a peaceful retreat, premium amenities,
+              and authentic service. Surrounded by scenic views and a vibrant neighborhood, our property offers the perfect blend of comfort and elegance.
+            </p>
+            <p>
+              From cozy rooms to personalized guest experiences, every detail is crafted to make your stay effortless and memorable.
+            </p>
+          </div>
+
+          <div class="intro-card">
+            <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1000&q=80" alt="Hotel lobby" />
+          </div>
+        </div>
+      </section>
+
+      <section id="services">
+        <div class="container">
+          <div class="section-title">
+            <h2>Services</h2>
+            <p>Everything you need for a seamless and enjoyable stay.</p>
+          </div>
+
+          <div class="services-grid">
+            <div class="service-card">
+              <div class="service-icon">✓</div>
+              <h3>24/7 Front Desk</h3>
+              <p>Friendly assistance and concierge support any time of the day.</p>
+            </div>
+
+            <div class="service-card">
+              <div class="service-icon">✦</div>
+              <h3>Free Wi-Fi</h3>
+              <p>Fast and reliable internet access in all rooms and common areas.</p>
+            </div>
+
+            <div class="service-card">
+              <div class="service-icon">☕</div>
+              <h3>Breakfast & Dining</h3>
+              <p>Enjoy fresh local flavors and a relaxing morning dining experience.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rooms">
+        <div class="container">
+          <div class="section-title">
+            <h2>Featured Rooms</h2>
+            <p>Comfortable, stylish, and designed for memorable stays.</p>
+          </div>
+
+          <div class="rooms-grid">
+            <article class="room-card">
+              <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80" alt="Deluxe room" />
+              <div class="room-details">
+                <h3>Deluxe Room</h3>
+                <p>Elegant space with king bed, city view, and premium amenities.</p>
+                <div class="price"><span>$180/night</span><a class="btn" href="pages/booking/booking.html">Reserve</a></div>
+              </div>
+            </article>
+
+            <article class="room-card">
+              <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80" alt="Suite room" />
+              <div class="room-details">
+                <h3>Executive Suite</h3>
+                <p>Spacious suite with lounge area, balcony, and upscale interiors.</p>
+                <div class="price"><span>$240/night</span><a class="btn" href="pages/booking/booking.html">Reserve</a></div>
+              </div>
+            </article>
+
+            <article class="room-card">
+              <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80" alt="Family room" />
+              <div class="room-details">
+                <h3>Family Room</h3>
+                <p>Comfortable accommodation for families with extra sleeping space.</p>
+                <div class="price"><span>$210/night</span><a class="btn" href="pages/booking/booking.html">Reserve</a></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container">
+          <div class="section-title">
+            <h2>Contact Information</h2>
+            <p>We look forward to welcoming you.</p>
+          </div>
+
+          <div class="contact-wrap">
+            <div class="contact-box">
+              <div class="contact-item">
+                <strong>Address</strong>
+                25 Ocean Avenue, Downtown, CA 90001
+              </div>
+
+              <div class="contact-item">
+                <strong>Phone</strong>
+                +1 (555) 234-7890
+              </div>
+
+              <div class="contact-item">
+                <strong>Email</strong>
+                hello@hotelhaven.com
+              </div>
+
+              <div class="contact-item">
+                <strong>Hours</strong>
+                Mon-Sun: 8:00 AM - 11:00 PM
+              </div>
+            </div>
+
+            <div class="contact-box">
+              <h3 class="booking-heading">Plan your stay</h3>
+              <p class="booking-note">Send a booking request and our team will confirm availability.</p>
+              <form id="booking-form" action="../backend/public/index.php" method="post">
+                <input type="text" name="name" placeholder="Your Name" aria-label="Your name" autocomplete="name" required />
+                <input type="email" name="email" placeholder="Your Email" aria-label="Your email" autocomplete="email" required />
+                <select name="room_type" aria-label="Room type" required>
+                  <option value="" disabled selected>Select a room</option>
+                  <option value="deluxe">Deluxe Room</option>
+                  <option value="executive_suite">Executive Suite</option>
+                  <option value="family">Family Room</option>
+                </select>
+                <input id="check-in" type="date" name="check_in" aria-label="Check-in date" required />
+                <input id="check-out" type="date" name="check_out" aria-label="Check-out date" required />
+                <input type="number" name="guests" aria-label="Number of guests" placeholder="Number of guests" min="1" value="1" required />
+                <textarea name="special_requests" placeholder="Special Requests (optional)" aria-label="Special requests"></textarea>
+                <button class="btn btn-submit" type="submit">Request Booking</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">© 2026 Hotel Haven. All rights reserved.</div>
+    </footer>
+    <script>
+      const bookingForm = document.getElementById('booking-form');
+      const checkIn = document.getElementById('check-in');
+      const checkOut = document.getElementById('check-out');
+
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      const todayValue = today.toISOString().split('T')[0];
+      checkIn.min = todayValue;
+      checkOut.min = todayValue;
+
+      checkIn.addEventListener('change', () => {
+        checkOut.min = checkIn.value || todayValue;
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+          checkOut.value = '';
+        }
+      });
+
+      bookingForm.addEventListener('submit', (event) => {
+        if (checkOut.value <= checkIn.value) {
+          event.preventDefault();
+          checkOut.setCustomValidity('Check-out must be after check-in.');
+          checkOut.reportValidity();
+        }
+      });
+
+      checkOut.addEventListener('input', () => checkOut.setCustomValidity(''));
+    </script>
+  </body>
+</html>
+ 
+
