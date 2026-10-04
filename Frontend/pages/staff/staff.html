@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Management | Hotel System</title>
+    <style>
+      :root {
+        --bg: #f3f6fb;
+        --panel: #ffffff;
+        --panel-soft: #eef4ff;
+        --primary: #1d4ed8;
+        --primary-dark: #163db1;
+        --primary-soft: rgba(29, 78, 216, 0.1);
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #dc2626;
+        --text: #111827;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #edf4ff 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 48px 24px 72px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .crumb {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .crumb span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary);
+      }
+
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.15rem, 3vw, 3rem);
+        line-height: 1.15;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(29, 78, 216, 0.22);
+      }
+
+      .btn-secondary {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+
+      .stat-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .stat-value {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .stat-value strong {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .delta {
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 6px 9px;
+        border-radius: 999px;
+      }
+
+      .delta.up {
+        background: rgba(22, 163, 74, 0.12);
+        color: var(--success);
+      }
+
+      .delta.down {
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--danger);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 2.3fr) minmax(260px, 0.9fr);
+        gap: 24px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+        padding: 20px 22px;
+        background: rgba(29, 78, 216, 0.02);
+      }
+
+      .panel-head h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .filter-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 6px 10px;
+      }
+
+      .filter-wrap input,
+      .filter-wrap select {
+        border: none;
+        background: transparent;
+        outline: none;
+        padding: 8px 10px;
+        color: var(--text);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+      }
+
+      thead th {
+        background: #fafcff;
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 15px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      tbody td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #eef2f7;
+        vertical-align: middle;
+      }
+
+      tbody tr:hover {
+        background: #fafcff;
+      }
+
+      .employee {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .avatar-pill {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        background: linear-gradient(135deg, #eef4ff, #dfeafe);
+      }
+
+      .emp-name {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .emp-name strong {
+        font-size: 0.98rem;
+      }
+
+      .emp-name span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 7px 10px;
+      }
+
+      .badge.active {
+        background: rgba(22, 163, 74, 0.1);
+        color: var(--success);
+      }
+
+      .badge.on-leave {
+        background: rgba(245, 158, 11, 0.14);
+        color: #b45309;
+      }
+
+      .badge.offline {
+        background: rgba(107, 114, 128, 0.12);
+        color: var(--muted);
+      }
+
+      .role-tag {
+        display: inline-block;
+        padding: 7px 9px;
+        border-radius: 10px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 0.76rem;
+      }
+
+      .contact {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .table-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .mini-btn {
+        border: 1px solid var(--border);
+        background: transparent;
+        padding: 8px 10px;
+        border-radius: 10px;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .mini-btn.primary {
+        background: var(--primary-soft);
+        border-color: rgba(29, 78, 216, 0.15);
+        color: var(--primary);
+      }
+
+      .mini-btn.danger {
+        background: rgba(220, 38, 38, 0.06);
+        border-color: rgba(220, 38, 38, 0.14);
+        color: var(--danger);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 32px 18px;
+        color: var(--muted);
+      }
+
+      .sidebar {
+        display: grid;
+        gap: 24px;
+      }
+
+      .side-panel {
+        padding: 20px;
+      }
+
+      .side-panel h3 {
+        margin: 0 0 16px;
+        font-size: 1.05rem;
+      }
+
+      .role-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .role-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fbfcff;
+      }
+
+      .role-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .role-item small {
+        color: var(--muted);
+      }
+
+      .count-pill {
+        min-width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border-radius: 10px;
+        font-weight: 700;
+      }
+
+      .task-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .task-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        border: 1px solid var(--border);
+        background: #fbfcff;
+        border-radius: 12px;
+        padding: 12px 12px;
+      }
+
+      .task-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary);
+        margin-top: 6px;
+      }
+
+      .task-item p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(17, 24, 39, 0.52);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        z-index: 99;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-card {
+        background: var(--panel);
+        width: min(560px, 100%);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 22px 18px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+      }
+
+      .close-btn {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 1.4rem;
+      }
+
+      .form-wrap {
+        padding: 22px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      .field label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 12px;
+        padding: 12px 13px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: rgba(29, 78, 216, 0.55);
+        box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.08);
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 920px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .container {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="crumb"><span></span> Hotel Management System</div>
+      </div>
+
+      <div class="header-row">
+        <h1>Staff Management</h1>
+        <div class="actions">
+          <button class="btn btn-secondary" type="button">Export List</button>
+          <button class="btn btn-primary" id="addStaffBtn" type="button">+ Add Staff</button>
+        </div>
+      </div>
+
+      <section class="stats" aria-label="Staff overview statistics">
+        <article class="stat-card">
+          <div class="stat-label">Total Staff</div>
+          <div class="stat-value">
+            <strong id="totalStaff">0</strong>
+            <span class="delta up">+8.2%</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-label">Active Today</div>
+          <div class="stat-value">
+            <strong id="activeStaff">0</strong>
+            <span class="delta up">+3</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-label">On Leave</div>
+          <div class="stat-value">
+            <strong id="leaveStaff">0</strong>
+            <span class="delta down">-1</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-label">Vacant Roles</div>
+          <div class="stat-value">
+            <strong id="vacantRoles">0</strong>
+            <span class="delta down">2 open</span>
+          </div>
+        </article>
+      </section>
+
+      <main class="layout">
+        <section class="panel" aria-label="Staff directory list">
+          <div class="panel-head">
+            <h2>Staff Directory</h2>
+            <div class="filter-wrap" aria-label="Staff filters">
+              <input id="searchInput" type="search" placeholder="Search staff" aria-label="Search staff" />
+              <select id="statusFilter" aria-label="Filter by status">
+                <option value="all">All Status</option>
+                <option value="Active">Active</option>
+                <option value="On Leave">On Leave</option>
+                <option value="Offline">Offline</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Shift</th>
+                  <th>Contact</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="staffTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="panel side-panel" aria-label="Role summary">
+            <h3>Role Allocation</h3>
+            <div id="roleList" class="role-list"></div>
+          </section>
+
+          <section class="panel side-panel" aria-label="Upcoming team tasks">
+            <h3>Priority Tasks</h3>
+            <div class="task-list">
+              <div class="task-item">
+                <span class="task-dot"></span>
+                <p>Finalize onboarding for front desk trainees this week.</p>
+              </div>
+              <div class="task-item">
+                <span class="task-dot"></span>
+                <p>Review housekeeping schedule coverage for the weekend roster.</p>
+              </div>
+              <div class="task-item">
+                <span class="task-dot"></span>
+                <p>Audit guest relations team response times and service logs.</p>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div class="modal" id="staffModal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+          <h3 id="modalTitle">Add Staff Member</h3>
+          <button class="close-btn" type="button" id="closeModalBtn" aria-label="Close">×</button>
+        </div>
+
+        <form id="staffForm">
+          <div class="form-wrap">
+            <div class="form-grid">
+              <div class="field full">
+                <label for="nameInput">Full Name</label>
+                <input id="nameInput" name="name" type="text" placeholder="John Smith" required />
+              </div>
+
+              <div class="field">
+                <label for="emailInput">Email</label>
+                <input id="emailInput" name="email" type="email" placeholder="john@hotel.com" required />
+              </div>
+
+              <div class="field">
+                <label for="phoneInput">Phone</label>
+                <input id="phoneInput" name="phone" type="tel" placeholder="+1 234 567 890" required />
+              </div>
+
+              <div class="field">
+                <label for="roleInput">Role</label>
+                <select id="roleInput" name="role" required>
+                  <option value="">Select role</option>
+                  <option value="Front Desk Manager">Front Desk Manager</option>
+                  <option value="Housekeeping Supervisor">Housekeeping Supervisor</option>
+                  <option value="Guest Relations Officer">Guest Relations Officer</option>
+                  <option value="Concierge">Concierge</option>
+                  <option value="Chef">Chef</option>
+                  <option value="Maintenance Technician">Maintenance Technician</option>
+                  <option value="Security Officer">Security Officer</option>
+                  <option value="HR Coordinator">HR Coordinator</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="departmentInput">Department</label>
+                <select id="departmentInput" name="department" required>
+                  <option value="">Select department</option>
+                  <option value="Front Office">Front Office</option>
+                  <option value="Housekeeping">Housekeeping</option>
+                  <option value="Food & Beverage">Food & Beverage</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Security">Security</option>
+                  <option value="HR">HR</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="shiftInput">Shift</label>
+                <select id="shiftInput" name="shift" required>
+                  <option value="">Select shift</option>
+                  <option value="Morning">Morning</option>
+                  <option value="Evening">Evening</option>
+                  <option value="Night">Night</option>
+                  <option value="Rotating">Rotating</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="statusInput">Status</label>
+                <select id="statusInput" name="status" required>
+                  <option value="Active">Active</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Offline">Offline</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Staff</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // staff.php is expected to provide GET (list), POST (create), and PUT (update).
+      const API_URL = 'staff.php';
+      let staffMembers = [];
+
+      const modal = document.getElementById('staffModal');
+      const form = document.getElementById('staffForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const tableBody = document.getElementById('staffTableBody');
+      const roleList = document.getElementById('roleList');
+      const totalStaffEl = document.getElementById('totalStaff');
+      const activeStaffEl = document.getElementById('activeStaff');
+      const leaveStaffEl = document.getElementById('leaveStaff');
+      const vacantRolesEl = document.getElementById('vacantRoles');
+
+      async function apiRequest(method, data) {
+        const response = await fetch(API_URL, {
+          method,
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          ...(data ? { body: JSON.stringify(data) } : {})
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
+        return result;
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[character]));
+      }
+
+      function initials(name) {
+        return name
+          .split(' ')
+          .map((part) => part[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+      }
+
+      function getFilteredStaff() {
+        const query = searchInput.value.trim().toLowerCase();
+        const selected = statusFilter.value;
+
+        return staffMembers.filter((member) => {
+          const matchesQuery =
+            !query ||
+            member.name.toLowerCase().includes(query) ||
+            member.role.toLowerCase().includes(query) ||
+            member.department.toLowerCase().includes(query);
+
+          const matchesStatus = selected === 'all' || member.status === selected;
+          return matchesQuery && matchesStatus;
+        });
+      }
+
+      function renderTable() {
+        const filtered = getFilteredStaff();
+
+        tableBody.innerHTML = filtered
+          .map(
+            (member) => `
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar-pill">${escapeHtml(initials(member.name || ''))}</div>
+                    <div class="emp-name">
+                      <strong>${escapeHtml(member.name)}</strong>
+                      <span>${escapeHtml(member.email)}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="role-tag">${escapeHtml(member.role)}</span></td>
+                <td>${escapeHtml(member.department)}</td>
+                <td><span class="badge ${escapeHtml(String(member.status).toLowerCase().replace(/\s+/g, '-'))}">${escapeHtml(member.status)}</span></td>
+                <td>${escapeHtml(member.shift)}</td>
+                <td class="contact">${escapeHtml(member.phone)}</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="mini-btn primary edit-btn" type="button" data-id="${escapeHtml(member.id)}">Edit</button>
+                    <button class="mini-btn" type="button">View</button>
+                  </div>
+                </td>
+              </tr>
+            `
+          )
+          .join('');
+
+        document.querySelectorAll('.edit-btn').forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const id = Number(event.currentTarget.dataset.id);
+            const member = staffMembers.find((item) => item.id === id);
+            openModal('Edit', member);
+          });
+        });
+      }
+
+      function renderRoleSummary() {
+        const counts = {};
+        staffMembers.forEach((member) => {
+          counts[member.role] = (counts[member.role] || 0) + 1;
+        });
+
+        roleList.innerHTML = Object.entries(counts)
+          .map(
+            ([role, count]) => `
+              <div class="role-item">
+                <div>
+                    <strong>${escapeHtml(role)}</strong>
+                  <small>${count} team member${count > 1 ? 's' : ''}</small>
+                </div>
+                <span class="count-pill">${count}</span>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      function updateStats() {
+        totalStaffEl.textContent = staffMembers.length;
+        activeStaffEl.textContent = staffMembers.filter((member) => member.status === 'Active').length;
+        leaveStaffEl.textContent = staffMembers.filter((member) => member.status === 'On Leave').length;
+        vacantRolesEl.textContent = Math.max(0, 8 - new Set(staffMembers.map((member) => member.role)).size);
+      }
+
+      function openModal(mode, member = null) {
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        modalTitle.textContent = mode === 'Edit' ? 'Edit Staff Member' : 'Add Staff Member';
+
+        if (mode === 'Edit' && member) {
+          form.dataset.mode = 'edit';
+          form.dataset.id = String(member.id);
+          document.getElementById('nameInput').value = member.name;
+          document.getElementById('emailInput').value = member.email;
+          document.getElementById('phoneInput').value = member.phone;
+          document.getElementById('roleInput').value = member.role;
+          document.getElementById('departmentInput').value = member.department;
+          document.getElementById('shiftInput').value = member.shift;
+          document.getElementById('statusInput').value = member.status;
+        } else {
+          form.reset();
+          form.dataset.mode = 'add';
+          delete form.dataset.id;
+        }
+      }
+
+      function closeModal() {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        form.reset();
+        delete form.dataset.mode;
+        delete form.dataset.id;
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(form).entries());
+        const editing = form.dataset.mode === 'edit' && form.dataset.id;
+        try {
+          const result = await apiRequest(editing ? 'PUT' : 'POST', {
+            ...formData,
+            ...(editing ? { id: Number(form.dataset.id) } : {})
+          });
+          const savedMember = result.staff || result;
+          if (editing) {
+            const index = staffMembers.findIndex((member) => Number(member.id) === Number(savedMember.id));
+            if (index >= 0) staffMembers[index] = savedMember;
+            else await loadStaff();
+          } else {
+            staffMembers.push(savedMember);
+          }
+          renderTable();
+          renderRoleSummary();
+          updateStats();
+          closeModal();
+        } catch (error) {
+          alert(`Unable to save staff: ${error.message}`);
+        }
+      });
+
+      document.getElementById('addStaffBtn').addEventListener('click', () => openModal('Add'));
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('cancelBtn').addEventListener('click', closeModal);
+      document.getElementById('staffModal').addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      searchInput.addEventListener('input', renderTable);
+      statusFilter.addEventListener('change', renderTable);
+
+      async function loadStaff() {
+        try {
+          const result = await apiRequest('GET');
+          staffMembers = Array.isArray(result) ? result : (result.staff || []);
+        } catch (error) {
+          staffMembers = [];
+          alert(`Unable to load staff from staff.php: ${error.message}`);
+        }
+        renderTable();
+        renderRoleSummary();
+        updateStats();
+      }
+
+      loadStaff();
+    </script>
+  </body>
+</html>
