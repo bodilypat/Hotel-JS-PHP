@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Occupancy Report | Hotel Management</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#172b4d;background:#f5f7fb;font-synthesis:none;--muted:#64748b;--line:#e2e8f0;--blue:#315eea}
+    *{box-sizing:border-box}body{margin:0}.page{max-width:1120px;margin:auto;padding:32px 22px 54px}h1{margin:0;font-size:clamp(26px,4vw,34px);letter-spacing:-.04em}.subtitle{margin:8px 0 24px;color:var(--muted);font-size:14px}.filters,.panel,.metric{background:#fff;border:1px solid var(--line);border-radius:12px}.filters{display:flex;align-items:end;gap:14px;flex-wrap:wrap;padding:16px;margin-bottom:16px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:650}.field input{height:40px;border:1px solid #cbd5e1;border-radius:7px;padding:0 10px;font:inherit}.button{height:40px;border:1px solid #d8e0eb;border-radius:7px;padding:0 15px;background:white;color:#26364b;font:inherit;font-weight:650;cursor:pointer}.button.primary{background:var(--blue);color:white;border-color:var(--blue)}.button:disabled{opacity:.55;cursor:wait}.status{min-height:20px;margin:0 0 12px;color:var(--muted);font-size:13px}.status.error{color:#b42318}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.metric{padding:16px}.metric-label{color:var(--muted);font-size:12px;font-weight:600}.metric-value{margin-top:8px;font-size:27px;font-weight:750;letter-spacing:-.04em}.metric-note{margin-top:4px;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.panel{padding:18px;min-width:0}.panel h2{margin:0;font-size:16px}.hint{margin:5px 0 14px;color:var(--muted);font-size:12px}.chart{height:205px;display:flex;align-items:end;gap:5px;padding:10px 2px 0;border-bottom:1px solid var(--line)}.bar-col{position:relative;display:flex;align-items:end;flex:1;min-width:3px;height:100%}.bar{width:100%;min-height:2px;border-radius:4px 4px 0 0;background:#7895fa}.bar-col:hover .bar{background:var(--blue)}.bar-col:hover:after{content:attr(data-tip);position:absolute;bottom:calc(var(--height) + 6px);left:50%;transform:translateX(-50%);padding:4px 6px;border-radius:4px;background:#172b4d;color:white;font-size:10px;white-space:nowrap;z-index:2}.axis{display:flex;justify-content:space-between;padding-top:7px;color:var(--muted);font-size:11px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px 7px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}td:last-child,th:last-child{text-align:right}.empty{text-align:center;color:var(--muted);padding:24px 8px}.footnote{margin:15px 0 0;color:var(--muted);font-size:12px}button:focus-visible,input:focus-visible{outline:3px solid #bfceff;outline-offset:2px}
+    @media(max-width:760px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}@media(max-width:460px){.page{padding:22px 13px 38px}.field,.field input{width:100%}.filters{align-items:stretch}.filters .button{flex:1}.panel{padding:14px}.metric{padding:13px}.metric-value{font-size:23px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Occupancy report</h1>
+    <p class="subtitle">Review room utilization and availability for your property.</p>
+    <form class="filters" id="filters">
+      <div class="field"><label for="start-date">From</label><input id="start-date" name="start_date" type="date" required></div>
+      <div class="field"><label for="end-date">To</label><input id="end-date" name="end_date" type="date" required></div>
+      <button class="button primary" id="run-report" type="submit">Run report</button>
+      <button class="button" id="export-csv" type="button" disabled>Export CSV</button>
+    </form>
+    <p class="status" id="status" role="status" aria-live="polite">Select a date range and run the report.</p>
+    <section class="metrics" aria-label="Occupancy summary">
+      <article class="metric"><div class="metric-label">Average occupancy</div><div class="metric-value" id="avg-occupancy">—</div><div class="metric-note">Selected period</div></article>
+      <article class="metric"><div class="metric-label">Room nights sold</div><div class="metric-value" id="rooms-sold">—</div><div class="metric-note">Occupied room nights</div></article>
+      <article class="metric"><div class="metric-label">Room nights available</div><div class="metric-value" id="rooms-available">—</div><div class="metric-note">Sellable room nights</div></article>
+      <article class="metric"><div class="metric-label">Out of service</div><div class="metric-value" id="out-of-service">—</div><div class="metric-note">Unavailable room nights</div></article>
+    </section>
+    <div class="grid">
+      <section class="panel" aria-labelledby="chart-title"><h2 id="chart-title">Daily occupancy</h2><p class="hint">Occupied room nights as a share of sellable room nights</p><div class="chart" id="chart" role="img" aria-label="Daily occupancy chart"></div><div class="axis"><span id="axis-start">—</span><span id="axis-end">—</span></div></section>
+      <section class="panel" aria-labelledby="table-title"><h2 id="table-title">Daily breakdown</h2><p class="hint">Room-night totals by date</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>Occ.</th><th>Sold</th><th>Avail.</th></tr></thead><tbody id="report-rows"><tr><td class="empty" colspan="4">Run a report to view daily results.</td></tr></tbody></table></div></section>
+    </div>
+    <p class="footnote">Occupancy = rooms sold ÷ sellable rooms. Out-of-service rooms are excluded from availability.</p>
+  </main>
+  <script>
+    // PHP endpoint: GET /backend/api/reports/occupancy.php?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+    // JSON: { summary: { occupancy_rate, rooms_sold, rooms_available, out_of_service }, daily: [{ date, occupancy_rate, rooms_sold, rooms_available, out_of_service }] }
+    (() => {
+      const endpoint = '../../../backend/api/reports/occupancy.php';
+      const form = document.getElementById('filters');
+      const start = document.getElementById('start-date');
+      const end = document.getElementById('end-date');
+      const status = document.getElementById('status');
+      const run = document.getElementById('run-report');
+      const exportButton = document.getElementById('export-csv');
+      let rows = [];
+      let controller;
+      const count = value => Number(value || 0).toLocaleString();
+      const rate = value => { const n = Number(value || 0); return `${(n <= 1 ? n * 100 : n).toFixed(1)}%`; };
+      const dateLabel = value => { const d = new Date(`${value}T00:00:00`); return Number.isNaN(d.getTime()) ? value : new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(d); };
+      function render(data) {
+        const summary = data.summary || {};
+        rows = Array.isArray(data.daily) ? data.daily : [];
+        document.getElementById('avg-occupancy').textContent = rate(summary.occupancy_rate);
+        document.getElementById('rooms-sold').textContent = count(summary.rooms_sold);
+        document.getElementById('rooms-available').textContent = count(summary.rooms_available);
+        document.getElementById('out-of-service').textContent = count(summary.out_of_service);
+        const body = document.getElementById('report-rows');
+        body.replaceChildren();
+        if (!rows.length) {
+          const row = body.insertRow(); const cell = row.insertCell(); cell.colSpan = 4; cell.className = 'empty'; cell.textContent = 'No occupancy data for this date range.';
+        } else rows.forEach(item => [dateLabel(item.date), rate(item.occupancy_rate), count(item.rooms_sold), count(item.rooms_available)].forEach((value, i) => { if (i === 0) body.insertRow(); body.rows[body.rows.length - 1].insertCell().textContent = value; }));
+        const chart = document.getElementById('chart'); chart.replaceChildren();
+        const shown = rows.slice(-60);
+        chart.setAttribute('aria-label', `${shown.length} daily occupancy values`);
+        shown.forEach(item => {
+          const value = Number(item.occupancy_rate || 0); const pct = Math.max(0, Math.min(100, value <= 1 ? value * 100 : value));
+          const col = document.createElement('div'); col.className = 'bar-col'; col.style.setProperty('--height', `${pct}%`); col.dataset.tip = `${dateLabel(item.date)} · ${pct.toFixed(1)}%`;
+          const bar = document.createElement('div'); bar.className = 'bar'; bar.style.height = `${pct}%`; col.appendChild(bar); chart.appendChild(col);
+        });
+        document.getElementById('axis-start').textContent = shown.length ? dateLabel(shown[0].date) : '—';
+        document.getElementById('axis-end').textContent = shown.length ? dateLabel(shown[shown.length - 1].date) : '—';
+        exportButton.disabled = rows.length === 0;
+      }
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        if (start.value > end.value) { status.textContent = 'Start date must be on or before end date.'; status.classList.add('error'); return; }
+        if (controller) controller.abort(); controller = new AbortController(); run.disabled = true;
+        status.classList.remove('error'); status.textContent = 'Loading report…';
+        const query = new URLSearchParams({ start_date: start.value, end_date: end.value });
+        try {
+          const response = await fetch(`${endpoint}?${query}`, { headers: { Accept: 'application/json' }, credentials: 'same-origin', signal: controller.signal });
+          if (!response.ok) throw new Error(`Request failed (${response.status}).`);
+          const data = await response.json();
+          if (!data || !data.summary || !Array.isArray(data.daily)) throw new Error('Unexpected report response.');
+          render(data); status.textContent = `Report loaded for ${dateLabel(start.value)} – ${dateLabel(end.value)}.`;
+        } catch (error) {
+          if (error.name !== 'AbortError') { status.textContent = `${error.message} Check the PHP report endpoint and try again.`; status.classList.add('error'); }
+        } finally { run.disabled = false; }
+      });
+      exportButton.addEventListener('click', () => {
+        if (!rows.length) return;
+        const columns = ['date', 'occupancy_rate', 'rooms_sold', 'rooms_available', 'out_of_service'];
+        const escapeCsv = value => `"${String(value ?? '').replaceAll('"', '""')}"`;
+        const csv = [columns.join(','), ...rows.map(item => columns.map(key => escapeCsv(item[key])).join(','))].join('\r\n');
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        const link = document.createElement('a'); link.href = url; link.download = `occupancy-${start.value}-to-${end.value}.csv`; link.click(); URL.revokeObjectURL(url);
+      });
+      const today = new Date();
+      const isoToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      const first = new Date(`${isoToday}T00:00:00`); first.setDate(first.getDate() - 29);
+      start.value = first.toISOString().slice(0, 10); end.value = isoToday;
+    })();
+  </script>
+</body>
+</html>
