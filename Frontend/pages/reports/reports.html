@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports Dashboard</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --panel-2: #1f2937;
+        --card: #f8fafc;
+        --muted: #94a3b8;
+        --primary: #4f46e5;
+        --secondary: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --text: #e2e8f0;
+        --border: rgba(148, 163, 184, 0.2);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #020817 0%, #0f172a 100%);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .button {
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.9);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .button:hover {
+        background: var(--panel-2);
+        transform: translateY(-1px);
+      }
+
+      .button:focus-visible {
+        outline: 2px solid #a5b4fc;
+        outline-offset: 3px;
+      }
+
+      .button.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+
+      .card {
+        background: rgba(17, 24, 39, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+      }
+
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-top: 14px;
+      }
+
+      .trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #6ee7b7;
+      }
+
+      .trend.down {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+
+      .chart-panel {
+        padding: 22px;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .pill {
+        font-size: 0.75rem;
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: rgba(79, 70, 229, 0.15);
+        color: #a5b4fc;
+      }
+
+      .bar-chart {
+        height: 220px;
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        padding-top: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .bar-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        height: 100%;
+      }
+
+      .bar {
+        width: 100%;
+        max-width: 38px;
+        border-radius: 10px 10px 0 0;
+        background: linear-gradient(180deg, #818cf8 0%, #4f46e5 100%);
+        min-height: 10px;
+      }
+
+      .bar.alt {
+        background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+      }
+
+      .bar-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .channel-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 18px;
+      }
+
+      .channel-item {
+        display: grid;
+        gap: 8px;
+      }
+
+      .channel-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+      }
+
+      .track {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.16);
+        overflow: hidden;
+      }
+
+      .fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      }
+
+      .fill.green {
+        background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+      }
+
+      .fill.purple {
+        background: linear-gradient(90deg, #a78bfa 0%, #8b5cf6 100%);
+      }
+
+      .table-panel {
+        margin-top: 24px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 680px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border-radius: 10px;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        background: rgba(15, 23, 42, 0.7);
+      }
+
+      td {
+        font-size: 0.95rem;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .status.paid {
+        background: rgba(16, 185, 129, 0.12);
+        color: #6ee7b7;
+      }
+
+      .status.pending {
+        background: rgba(245, 158, 11, 0.12);
+        color: #fbbf24;
+      }
+
+      .status.failed {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+      }
+
+      .status.confirmed {
+        background: rgba(16, 185, 129, 0.12);
+        color: #6ee7b7;
+      }
+
+      .status.checked-in {
+        background: rgba(79, 70, 229, 0.15);
+        color: #a5b4fc;
+      }
+
+      .table-wrap:focus-visible {
+        outline: 2px solid #a5b4fc;
+        outline-offset: 3px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 860px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+
+        .content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .actions {
+          width: 100%;
+        }
+
+        .actions .button {
+          flex: 1;
+        }
+
+        .panel-header {
+          gap: 12px;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="topbar">
+        <h1>Reports Dashboard</h1>
+        <div class="actions">
+          <button class="button" id="export-report" type="button">Export</button>
+          <button class="button primary" id="generate-report" type="button">Generate Report</button>
+        </div>
+      </header>
+      <p class="sr-only" id="report-message" role="status" aria-live="polite"></p>
+
+      <section class="stats">
+        <div class="card stat">
+          <div>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value" data-report-stat="revenue">$84.2K</div>
+          </div>
+          <div class="trend" data-report-trend="revenue">▲ 12.4%</div>
+        </div>
+
+        <div class="card stat">
+          <div>
+            <div class="stat-label">Bookings</div>
+            <div class="stat-value" data-report-stat="bookings">1,284</div>
+          </div>
+          <div class="trend" data-report-trend="bookings">▲ 8.1%</div>
+        </div>
+
+        <div class="card stat">
+          <div>
+            <div class="stat-label">Occupancy</div>
+            <div class="stat-value" data-report-stat="occupancy">82.6%</div>
+          </div>
+          <div class="trend" data-report-trend="occupancy">▲ 3.2%</div>
+        </div>
+
+        <div class="card stat">
+          <div>
+            <div class="stat-label">Satisfaction</div>
+            <div class="stat-value" data-report-stat="satisfaction">96.4%</div>
+          </div>
+          <div class="trend" data-report-trend="satisfaction">▲ 2.3%</div>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="card chart-panel">
+          <div class="panel-header">
+            <h2>Revenue Performance</h2>
+            <span class="pill">Last 6 months</span>
+          </div>
+
+          <div class="bar-chart" id="revenue-chart" role="img" aria-label="Monthly hotel revenue trend from January to June">
+            <div class="bar-group">
+              <div class="bar" style="height: 35%;"></div>
+              <div class="bar-label">Jan</div>
+            </div>
+            <div class="bar-group">
+              <div class="bar alt" style="height: 45%;"></div>
+              <div class="bar-label">Feb</div>
+            </div>
+            <div class="bar-group">
+              <div class="bar" style="height: 52%;"></div>
+              <div class="bar-label">Mar</div>
+            </div>
+            <div class="bar-group">
+              <div class="bar alt" style="height: 64%;"></div>
+              <div class="bar-label">Apr</div>
+            </div>
+            <div class="bar-group">
+              <div class="bar" style="height: 78%;"></div>
+              <div class="bar-label">May</div>
+            </div>
+            <div class="bar-group">
+              <div class="bar alt" style="height: 92%;"></div>
+              <div class="bar-label">Jun</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-panel">
+          <div class="panel-header">
+            <h2>Booking Channels</h2>
+            <span class="pill">Share of bookings</span>
+          </div>
+
+          <ul class="channel-list" id="booking-channels">
+            <li class="channel-item">
+              <div class="channel-meta">
+                <span>Direct Website</span>
+                <strong>72%</strong>
+              </div>
+              <div class="track"><div class="fill" style="width: 72%;"></div></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-meta">
+                <span>Online Travel Agencies</span>
+                <strong>56%</strong>
+              </div>
+              <div class="track"><div class="fill green" style="width: 56%;"></div></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-meta">
+                <span>Phone &amp; Email</span>
+                <strong>41%</strong>
+              </div>
+              <div class="track"><div class="fill purple" style="width: 41%;"></div></div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card table-panel">
+        <div class="panel-header">
+          <h2>Recent Reservations</h2>
+          <span class="pill">Latest activity</span>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Recent hotel reservations" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Guest</th>
+              <th>Booking ID</th>
+              <th>Room</th>
+              <th>Check-in</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="reservation-rows">
+            <tr>
+              <td>Michael Chen</td>
+              <td>#BK10482</td>
+              <td>Deluxe King</td>
+              <td>2026-10-01</td>
+              <td>$360.00</td>
+              <td><span class="status checked-in">Checked in</span></td>
+            </tr>
+            <tr>
+              <td>Priya Shah</td>
+              <td>#BK10479</td>
+              <td>Twin Room</td>
+              <td>2026-10-03</td>
+              <td>$180.00</td>
+              <td><span class="status pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td>Daniel Brooks</td>
+              <td>#BK10474</td>
+              <td>Suite 402</td>
+              <td>2026-10-05</td>
+              <td>$540.00</td>
+              <td><span class="status confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Laura Gomez</td>
+              <td>#BK10468</td>
+              <td>Queen Room</td>
+              <td>2026-10-07</td>
+              <td>$120.00</td>
+              <td><span class="status confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Alex Kim</td>
+              <td>#BK10461</td>
+              <td>Deluxe King</td>
+              <td>2026-10-08</td>
+              <td>$410.00</td>
+              <td><span class="status confirmed">Confirmed</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+    </div>
+    <script>
+      // Expects ../Backend/reports.php to return JSON for the authenticated hotel.
+      const reportsEndpoint = "../Backend/reports.php";
+      const reportMessage = document.getElementById("report-message");
+      const reportData = { reservations: [] };
+
+      function setMessage(message) {
+        reportMessage.textContent = message;
+      }
+
+      function formatValue(key, value) {
+        if (key === "revenue" && typeof value === "number") {
+          return new Intl.NumberFormat(undefined, {
+            style: "currency", currency: "USD", maximumFractionDigits: 0
+          }).format(value);
+        }
+        if ((key === "occupancy" || key === "satisfaction") && typeof value === "number") {
+          return `${value}%`;
+        }
+        return typeof value === "number" ? new Intl.NumberFormat().format(value) : String(value);
+      }
+
+      function renderReport(payload) {
+        const data = payload.data && typeof payload.data === "object" ? payload.data : payload;
+        ["revenue", "bookings", "occupancy", "satisfaction"].forEach((key) => {
+          if (data[key] !== undefined) {
+            document.querySelector(`[data-report-stat="${key}"]`).textContent = formatValue(key, data[key]);
+          }
+          const trend = data.trends && data.trends[key];
+          if (trend !== undefined) {
+            const element = document.querySelector(`[data-report-trend="${key}"]`);
+            const value = Number(trend);
+            element.textContent = `${value >= 0 ? "▲" : "▼"} ${Math.abs(value)}%`;
+            element.classList.toggle("down", value < 0);
+          }
+        });
+
+        if (Array.isArray(data.monthlyRevenue)) {
+          const chart = document.getElementById("revenue-chart");
+          chart.replaceChildren();
+          const max = Math.max(...data.monthlyRevenue.map((item) => Number(item.revenue) || 0), 1);
+          data.monthlyRevenue.forEach((item, index) => {
+            const group = document.createElement("div");
+            group.className = "bar-group";
+            const bar = document.createElement("div");
+            bar.className = `bar${index % 2 ? " alt" : ""}`;
+            bar.style.height = `${Math.max(5, (Number(item.revenue) / max) * 100)}%`;
+            const label = document.createElement("div");
+            label.className = "bar-label";
+            label.textContent = item.month;
+            group.append(bar, label);
+            chart.append(group);
+          });
+        }
+
+        if (Array.isArray(data.channels)) {
+          const list = document.getElementById("booking-channels");
+          list.replaceChildren();
+          data.channels.forEach((channel, index) => {
+            const percentage = Math.max(0, Math.min(100, Number(channel.percentage) || 0));
+            const item = document.createElement("li");
+            item.className = "channel-item";
+            const meta = document.createElement("div");
+            meta.className = "channel-meta";
+            const name = document.createElement("span");
+            name.textContent = channel.name;
+            const value = document.createElement("strong");
+            value.textContent = `${percentage}%`;
+            meta.append(name, value);
+            const track = document.createElement("div");
+            track.className = "track";
+            const fill = document.createElement("div");
+            fill.className = `fill${index % 3 === 1 ? " green" : index % 3 === 2 ? " purple" : ""}`;
+            fill.style.width = `${percentage}%`;
+            track.append(fill);
+            item.append(meta, track);
+            list.append(item);
+          });
+        }
+
+        if (Array.isArray(data.reservations)) {
+          reportData.reservations = data.reservations;
+          const rows = document.getElementById("reservation-rows");
+          rows.replaceChildren();
+          data.reservations.forEach((reservation) => {
+            const row = document.createElement("tr");
+            [reservation.guest, reservation.bookingId, reservation.room, reservation.checkIn,
+              typeof reservation.total === "number" ? formatValue("revenue", reservation.total) : reservation.total]
+              .forEach((value) => {
+                const cell = document.createElement("td");
+                cell.textContent = value == null ? "" : value;
+                row.append(cell);
+              });
+            const statusCell = document.createElement("td");
+            const status = document.createElement("span");
+            const statusText = String(reservation.status || "");
+            status.className = `status ${statusText.toLowerCase().replace(/[^a-z-]/g, "")}`;
+            status.textContent = statusText;
+            statusCell.append(status);
+            row.append(statusCell);
+            rows.append(row);
+          });
+        }
+      }
+
+      async function generateReport() {
+        const button = document.getElementById("generate-report");
+        button.disabled = true;
+        setMessage("Loading report…");
+        try {
+          const response = await fetch(reportsEndpoint, {
+            headers: { Accept: "application/json" },
+            credentials: "same-origin",
+            cache: "no-store"
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          renderReport(payload);
+          setMessage("Report updated.");
+        } catch (error) {
+          setMessage("Unable to load report data. Check the PHP reports endpoint and try again.");
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      function exportReport() {
+        const rows = Array.from(document.querySelectorAll(".table-wrap tr"))
+          .map((row) => Array.from(row.cells, (cell) => `"${cell.textContent.trim().replace(/"/g, '""')}"`).join(","));
+        if (rows.length < 2) {
+          setMessage("There are no reservations to export.");
+          return;
+        }
+        const blob = new Blob([rows.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "hotel-reservations-report.csv";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        setMessage("Report exported as CSV.");
+      }
+
+      document.getElementById("generate-report").addEventListener("click", generateReport);
+      document.getElementById("export-report").addEventListener("click", exportReport);
+      generateReport();
+    </script>
+  </body>
+</html>
