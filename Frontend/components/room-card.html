@@ -1,0 +1,42 @@
+<article class="room-card" data-room-id="{{room.id}}">
+	<a class="room-card__image-link" href="../pages/rooms/room-details.html?id={{room.id}}" aria-label="View {{room.name}} details">
+		<img
+			class="room-card__image"
+			src="{{room.image}}"
+			alt="{{room.imageAlt}}"
+			loading="lazy"
+		>
+	</a>
+
+	<div class="room-card__content">
+		<div class="room-card__heading">
+			<div>
+				<p class="room-card__type">{{room.type}}</p>
+				<h2 class="room-card__title">
+					<a href="../pages/rooms/room-details.html?id={{room.id}}">{{room.name}}</a>
+				</h2>
+			</div>
+			<span class="room-card__status room-card__status--{{room.statusClass}}">{{room.status}}</span>
+		</div>
+
+		<p class="room-card__description">{{room.description}}</p>
+
+		<ul class="room-card__features" aria-label="Room features">
+			<li>{{room.capacity}} guests</li>
+			<li>{{room.bedType}}</li>
+			<li>{{room.size}} m²</li>
+		</ul>
+
+		<div class="room-card__footer">
+			<p class="room-card__price">
+				<strong>{{room.currency}}{{room.price}}</strong>
+				<span> / night</span>
+			</p>
+			<a class="room-card__button" href="../pages/rooms/room-details.html?id={{room.id}}">
+				View room <span aria-hidden="true">→</span>
+			</a>
+		</div>
+	</div>
+</article>
+
+
