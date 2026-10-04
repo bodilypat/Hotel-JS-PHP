@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice | Grand Horizon Hotel</title>
+    <style>
+      :root {
+        --primary: #0f172a;
+        --primary-soft: #1e293b;
+        --accent: #d4a85a;
+        --accent-soft: #f5e8c8;
+        --success: #1c9c73;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --card: #ffffff;
+        --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #eef3f9 0%, #f8fafc 100%);
+        color: var(--text);
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        padding: 32px 24px 64px;
+      }
+
+      .invoice-card {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: var(--card);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .invoice-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 32px 40px 22px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+        color: #fff;
+      }
+
+      .brand-wrap {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .brand-mark {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 1.6rem;
+      }
+
+      .brand-text h1 {
+        margin: 0;
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        letter-spacing: 0.02em;
+      }
+
+      .brand-text p {
+        margin: 5px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.92rem;
+      }
+
+      .invoice-meta { text-align: right; }
+
+      .invoice-meta .label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.72);
+        margin-bottom: 8px;
+      }
+
+      .invoice-meta .number {
+        font-size: clamp(1.6rem, 3vw, 2.5rem);
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .invoice-body { padding: 36px 40px 24px; }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: 26px;
+        margin-bottom: 28px;
+      }
+
+      .info-box {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px 20px;
+      }
+
+      .info-box .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .info-box .title span:last-child {
+        color: var(--accent);
+        font-size: 1.1rem;
+      }
+
+      .info-box p {
+        margin: 6px 0;
+        font-size: 0.98rem;
+        color: var(--text);
+      }
+
+      .info-box strong { color: var(--primary); }
+
+      .table-wrap {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+      }
+
+      thead th {
+        background: #f3f6fb;
+        color: var(--primary);
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 16px 18px;
+        text-align: left;
+      }
+
+      tbody td {
+        padding: 18px;
+        border-top: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      tbody tr:nth-child(even) { background: rgba(248, 250, 252, 0.6); }
+
+      .service-name {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 4px;
+      }
+
+      .service-meta { font-size: 0.82rem; color: var(--muted); }
+      .numeric { text-align: right; white-space: nowrap; }
+      .amount { font-weight: 700; color: var(--primary); }
+
+      .summary {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+
+      .summary-box {
+        width: min(100%, 420px);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        padding: 22px 20px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 8px 0;
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .summary-row.total {
+        margin-top: 10px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        color: var(--primary);
+        font-size: 1.15rem;
+        font-weight: 800;
+      }
+
+      .status-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 26px;
+        padding: 18px 20px;
+        background: linear-gradient(135deg, rgba(28, 156, 115, 0.08) 0%, rgba(28, 156, 115, 0.03) 100%);
+        border: 1px solid rgba(28, 156, 115, 0.18);
+        border-radius: 16px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(28, 156, 115, 0.12);
+        color: var(--success);
+        border: 1px solid rgba(28, 156, 115, 0.22);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .status-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .footer-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        margin-top: 28px;
+      }
+
+      .payment-info,
+      .notes {
+        flex: 1;
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 20px;
+      }
+
+      .payment-info h3,
+      .notes h3 {
+        margin: 0 0 12px;
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .payment-info p,
+      .notes p {
+        margin: 6px 0;
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 24px 40px 40px;
+        border-top: 1px solid var(--line);
+        background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+      }
+
+      .btn {
+        appearance: none;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover { transform: translateY(-1px); }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+      }
+
+      .btn-secondary {
+        background: var(--accent-soft);
+        color: var(--primary);
+      }
+
+      .btn-ghost {
+        background: #fff;
+        color: var(--primary);
+        border: 1px solid var(--line);
+      }
+
+      @media (max-width: 820px) {
+        .invoice-header,
+        .footer-row,
+        .status-box {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .invoice-meta { text-align: left; }
+        .info-grid { grid-template-columns: 1fr; }
+        .summary { justify-content: stretch; }
+
+        .actions {
+          flex-wrap: wrap;
+          justify-content: stretch;
+        }
+
+        .actions .btn { flex: 1 1 180px; }
+      }
+
+      @media print {
+        body { background: #fff; }
+        .page-shell { padding: 0; }
+        .invoice-card {
+          box-shadow: none;
+          border-radius: 0;
+          border: none;
+          max-width: none;
+        }
+        .actions { display: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="invoice-card">
+        <header class="invoice-header">
+          <div class="brand-wrap">
+            <div class="brand-mark">✦</div>
+            <div class="brand-text">
+              <h1>Grand Horizon Hotel</h1>
+              <p>Luxury Hospitality &amp; Suites</p>
+            </div>
+          </div>
+
+          <div class="invoice-meta">
+            <span class="label">Invoice</span>
+            <div class="number">#INV-2048</div>
+          </div>
+        </header>
+
+        <div class="invoice-body">
+          <div class="info-grid">
+            <div class="info-box">
+              <div class="title">
+                <span>Hotel Details</span>
+                <span>⌂</span>
+              </div>
+              <p><strong>Grand Horizon Hotel</strong></p>
+              <p>24 Skyline Avenue, Downtown</p>
+              <p>San Francisco, CA 94105</p>
+              <p>+1 (415) 555-0188</p>
+              <p>billing@grandhorizonhotel.com</p>
+            </div>
+
+            <div class="info-box">
+              <div class="title">
+                <span>Bill To</span>
+                <span>👤</span>
+              </div>
+              <p><strong>Mr. Daniel Brooks</strong></p>
+              <p>Booking ID: BK-17842</p>
+              <p>Guest ID: GST-10427</p>
+              <p>Suite 712, Harbor View</p>
+              <p>dbrooks@example.com</p>
+            </div>
+          </div>
+
+          <div class="info-grid" style="margin-top: -8px;">
+            <div class="info-box">
+              <div class="title">
+                <span>Invoice Info</span>
+                <span>🧾</span>
+              </div>
+              <p>Issue Date: <strong>12 Sep 2026</strong></p>
+              <p>Due Date: <strong>26 Sep 2026</strong></p>
+              <p>Payment Method: <strong>Visa •••• 2874</strong></p>
+            </div>
+
+            <div class="info-box">
+              <div class="title">
+                <span>Stay Details</span>
+                <span>🛏</span>
+              </div>
+              <p>Room: <strong>Deluxe Ocean View</strong></p>
+              <p>Check-in: <strong>09 Sep 2026</strong></p>
+              <p>Check-out: <strong>12 Sep 2026</strong></p>
+              <p>Duration: <strong>3 Nights</strong></p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Qty</th>
+                  <th>Rate</th>
+                  <th class="numeric">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="service-name">Deluxe Ocean View Room</div>
+                    <div class="service-meta">09 Sep 2026 — 12 Sep 2026</div>
+                  </td>
+                  <td>3 nights</td>
+                  <td>$320.00</td>
+                  <td class="numeric amount">$960.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="service-name">Breakfast &amp; Welcome Amenities</div>
+                    <div class="service-meta">Included daily service</div>
+                  </td>
+                  <td>3</td>
+                  <td>$45.00</td>
+                  <td class="numeric amount">$135.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="service-name">Spa &amp; Wellness Access</div>
+                    <div class="service-meta">Complimentary access for 2 guests</div>
+                  </td>
+                  <td>1</td>
+                  <td>$80.00</td>
+                  <td class="numeric amount">$80.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="service-name">Airport Transfer</div>
+                    <div class="service-meta">Round trip executive car service</div>
+                  </td>
+                  <td>1</td>
+                  <td>$150.00</td>
+                  <td class="numeric amount">$150.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="summary">
+            <div class="summary-box">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <strong>$1,325.00</strong>
+              </div>
+              <div class="summary-row">
+                <span>Tax (8.5%)</span>
+                <strong>$112.63</strong>
+              </div>
+              <div class="summary-row">
+                <span>Service Charge</span>
+                <strong>$66.25</strong>
+              </div>
+              <div class="summary-row">
+                <span>Discount</span>
+                <strong>-$75.00</strong>
+              </div>
+              <div class="summary-row total">
+                <span>Total Due</span>
+                <span>$1,428.88</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-box">
+            <div class="status-badge">✓ Paid in Full</div>
+            <div class="status-note">This invoice was settled on 12 Sep 2026 via Visa ending in 2874.</div>
+          </div>
+
+          <div class="footer-row">
+            <div class="payment-info">
+              <h3>Payment Details</h3>
+              <p><strong>Bank:</strong> Horizon National Bank</p>
+              <p><strong>Account:</strong> 104567890</p>
+              <p><strong>Reference:</strong> INV-2048 / BK-17842</p>
+            </div>
+
+            <div class="notes">
+              <h3>Notes</h3>
+              <p>Thank you for choosing Grand Horizon Hotel. We hope you enjoyed your stay and look forward to welcoming you again.</p>
+              <p>For any billing inquiries, please contact our finance desk at billing@grandhorizonhotel.com.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" type="button" onclick="window.print()">Print Invoice</button>
+          <button class="btn btn-ghost" type="button">Download PDF</button>
+          <button class="btn btn-primary" type="button">Send Email</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
