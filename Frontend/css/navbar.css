@@ -1,0 +1,171 @@
+/* Responsive navbar for a hotel management system */
+
+:root {
+	--navbar-bg: #ffffff;
+	--navbar-text: #263746;
+	--navbar-muted: #64748b;
+	--navbar-accent: #0f766e;
+	--navbar-accent-hover: #115e59;
+	--navbar-border: #e2e8f0;
+	--navbar-shadow: 0 8px 24px rgb(15 23 42 / 7%);
+}
+
+.navbar {
+	position: sticky;
+	z-index: 1000;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1.5rem;
+	min-height: 4.5rem;
+	padding: 0.75rem clamp(1rem, 4vw, 3.5rem);
+	color: var(--navbar-text);
+	background: var(--navbar-bg);
+	border-bottom: 1px solid var(--navbar-border);
+	box-shadow: var(--navbar-shadow);
+}
+
+.navbar__brand {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 0.7rem;
+	color: inherit;
+	font-size: 1.15rem;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+	text-decoration: none;
+}
+
+.navbar__logo {
+	display: grid;
+	width: 2.5rem;
+	height: 2.5rem;
+	place-items: center;
+	color: #fff;
+	background: var(--navbar-accent);
+	border-radius: 0.75rem;
+}
+
+.navbar__links {
+	display: flex;
+	align-items: center;
+	gap: clamp(0.75rem, 2vw, 1.75rem);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.navbar__link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 2.75rem;
+	color: var(--navbar-muted);
+	font-size: 0.925rem;
+	font-weight: 500;
+	text-decoration: none;
+	transition: color 160ms ease;
+}
+
+.navbar__link:hover,
+.navbar__link:focus-visible,
+.navbar__link[aria-current="page"] {
+	color: var(--navbar-accent);
+}
+
+.navbar__actions {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.navbar__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 2.6rem;
+	padding: 0.55rem 1rem;
+	color: #fff;
+	background: var(--navbar-accent);
+	border: 1px solid var(--navbar-accent);
+	border-radius: 0.6rem;
+	font: inherit;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.navbar__button:hover {
+	background: var(--navbar-accent-hover);
+	border-color: var(--navbar-accent-hover);
+}
+
+.navbar__toggle {
+	display: none;
+	padding: 0.5rem;
+	color: var(--navbar-text);
+	background: transparent;
+	border: 1px solid var(--navbar-border);
+	border-radius: 0.55rem;
+	font: inherit;
+	cursor: pointer;
+}
+
+.navbar a:focus-visible,
+.navbar button:focus-visible {
+	outline: 3px solid rgb(15 118 110 / 35%);
+	outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+	.navbar {
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.navbar__toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin-left: auto;
+	}
+
+	.navbar__links {
+		display: none;
+		order: 3;
+		flex: 1 0 100%;
+		align-items: stretch;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding-top: 0.5rem;
+		border-top: 1px solid var(--navbar-border);
+	}
+
+	/* Toggle this class when the mobile menu opens. */
+	.navbar__links.is-open {
+		display: flex;
+	}
+
+	.navbar__link {
+		padding: 0.4rem 0.25rem;
+	}
+
+	.navbar__actions {
+		order: 4;
+		width: 100%;
+	}
+
+	.navbar__actions .navbar__button {
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.navbar__link,
+	.navbar__button {
+		transition: none;
+	}
+}
