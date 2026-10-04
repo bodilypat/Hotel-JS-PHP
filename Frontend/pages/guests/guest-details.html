@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Guest profile, contact information, preferences, and stay history">
+	<title>Guest Details | Haven Hotel</title>
+	<link rel="stylesheet" href="../../css/style.css">
+	<link rel="stylesheet" href="../../css/guests.css">
+	<link rel="stylesheet" href="../../css/tables.css">
+	<link rel="stylesheet" href="../../css/responsive.css">
+	<style>
+		.guest-details{max-width:1180px;margin:auto;padding:2rem}.page-head,.profile,.identity,.actions,.section-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}.page-head{margin-bottom:1.25rem}.profile,.panel,.facts{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.4rem}.identity{justify-content:flex-start}.avatar{width:60px;height:60px;display:grid;place-items:center;border-radius:50%;background:#e8eefc;color:#294a91;font-weight:700;font-size:1.2rem}.muted,dt{color:#667085}.actions{flex-wrap:wrap}.button{display:inline-block;border:1px solid #d0d5dd;border-radius:8px;padding:.65rem 1rem;background:#fff;color:inherit;text-decoration:none;font:inherit;cursor:pointer}.button-primary{background:#243f78;border-color:#243f78;color:white}.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:1rem 0}.facts dt{font-size:.85rem;margin-bottom:.35rem}.facts dd{margin:0;font-weight:600;overflow-wrap:anywhere}.columns{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,1fr);gap:1rem}.panel{margin-bottom:1rem}.section-head{margin-bottom:1rem}.section-head h2,.profile h1{margin:0}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:.75rem .5rem;border-bottom:1px solid #eaecf0;white-space:nowrap}th{color:#667085;font-size:.85rem}.badge{display:inline-block;padding:.25rem .6rem;border-radius:999px;background:#ecfdf3;color:#027a48;font-size:.8rem}.note{border-left:3px solid #d0d5dd;padding:.25rem 0 .25rem .8rem}@media(max-width:760px){.guest-details{padding:1rem}.page-head,.profile{align-items:flex-start;flex-direction:column}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}
+	</style>
+</head>
+<body>
+	<a class="skip-link" href="#main-content">Skip to content</a>
+	<header class="navbar">
+		<a href="../../index.html" aria-label="Haven Hotel home">Haven Hotel</a>
+		<nav aria-label="Main navigation"><a href="../../dashboard/dashboard.html">Dashboard</a><a href="guests.html" aria-current="page">Guests</a><a href="../booking/booking.html">Bookings</a></nav>
+	</header>
+	<main id="main-content" class="guest-details">
+		<div class="page-head"><div><p class="muted">Guests / Profile</p><h1>Guest details</h1></div><a class="button" href="guests.html">← Back to guests</a></div>
+		<section class="profile" aria-labelledby="guest-name">
+			<div class="identity"><div class="avatar" id="guest-avatar" aria-hidden="true">JD</div><div><h1 id="guest-name">Jordan Davis</h1><p class="muted">Guest ID: <span id="guest-id">GST-1048</span> · Member since <span id="member-since">2022</span></p></div></div>
+			<div class="actions"><a class="button" id="email-guest" href="mailto:jordan.davis@example.com">Email guest</a><button class="button button-primary" id="edit-guest" type="button">Edit profile</button></div>
+		</section>
+		<dl class="facts" aria-label="Guest contact and account summary">
+			<div><dt>Email</dt><dd id="guest-email">jordan.davis@example.com</dd></div><div><dt>Phone</dt><dd id="guest-phone">+1 (555) 014-8820</dd></div><div><dt>Nationality</dt><dd id="guest-nationality">United States</dd></div><div><dt>Account status</dt><dd><span class="badge" id="guest-status">Active</span></dd></div>
+			<div><dt>Total stays</dt><dd id="total-stays">3</dd></div><div><dt>Total spent</dt><dd id="total-spent">$2,480.00</dd></div><div><dt>Last stay</dt><dd id="last-stay">May 12, 2025</dd></div><div><dt>Preferred room</dt><dd id="preferred-room">Deluxe King</dd></div>
+		</dl>
+		<div class="columns">
+			<section class="panel" aria-labelledby="stay-history-title"><div class="section-head"><h2 id="stay-history-title">Stay history</h2><a class="button button-primary" href="../booking/booking.html?guestId=GST-1048">Create booking</a></div><div class="table-scroll"><table><thead><tr><th>Booking</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Total</th><th>Status</th></tr></thead><tbody id="stay-history">
+				<tr><td><a href="../booking/booking-details.html?id=BK-2086">BK-2086</a></td><td>Deluxe King · 304</td><td>May 9, 2025</td><td>May 12, 2025</td><td>$840.00</td><td><span class="badge">Completed</span></td></tr>
+				<tr><td><a href="../booking/booking-details.html?id=BK-1732">BK-1732</a></td><td>Deluxe King · 211</td><td>Nov 18, 2024</td><td>Nov 21, 2024</td><td>$795.00</td><td><span class="badge">Completed</span></td></tr>
+				<tr><td><a href="../booking/booking-details.html?id=BK-1104">BK-1104</a></td><td>Queen · 108</td><td>Jun 2, 2023</td><td>Jun 5, 2023</td><td>$845.00</td><td><span class="badge">Completed</span></td></tr>
+			</tbody></table></div></section>
+			<aside>
+				<section class="panel" aria-labelledby="preferences-title"><div class="section-head"><h2 id="preferences-title">Preferences</h2></div><p><strong>Room:</strong> High floor, away from elevator</p><p><strong>Dietary:</strong> Vegetarian</p><p><strong>Communication:</strong> Email</p></section>
+				<section class="panel" aria-labelledby="notes-title"><div class="section-head"><h2 id="notes-title">Staff notes</h2></div><div id="guest-notes" aria-live="polite"><p class="note">Returning guest. Prefers early check-in when available.</p></div><button class="button" id="add-note" type="button">Add note</button></section>
+			</aside>
+		</div>
+	</main>
+	<script src="../../js/api.js" defer></script>
+	<script src="../../js/guests.js" defer></script>
+</body>
+</html>
+
