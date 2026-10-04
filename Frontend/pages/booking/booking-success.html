@@ -1,0 +1,41 @@
+<!-- frontend/pages/booking/booking-success.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Booking confirmed | Everpine Hotel</title>
+	<style>
+		*{box-sizing:border-box}body{margin:0;background:#f5f7f4;color:#19332d;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.topbar{height:72px;background:#fff;border-bottom:1px solid #e6ebe6;display:flex;align-items:center;justify-content:space-between;padding:0 max(6vw,22px)}a{color:inherit}.brand{font-size:19px;font-weight:750;text-decoration:none}.mark{display:inline-grid;place-items:center;width:34px;height:34px;margin-right:9px;border-radius:10px;background:#173d31;color:#fff}.topbar>a:last-child{font-size:14px;color:#53675e;text-decoration:none}main{width:min(850px,calc(100% - 36px));margin:50px auto}.hero{text-align:center;margin-bottom:30px}.check{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 15px;border-radius:50%;background:#e1f2e7;color:#237747;font-size:32px;font-weight:700}.eyebrow{color:#538069;font-size:12px;font-weight:750;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:8px 0;font-size:clamp(30px,5vw,42px);letter-spacing:-.04em}.hero p{margin:0;color:#697870}.card{overflow:hidden;border:1px solid #e5ebe5;border-radius:16px;background:#fff;box-shadow:0 10px 32px #183a2d0a}.card-head{display:flex;align-items:center;justify-content:space-between;padding:22px 26px;border-bottom:1px solid #edf0ec}.card-head h2{margin:0;font-size:17px}.badge{padding:6px 11px;border-radius:99px;background:#e8f5ec;color:#267448;font-size:12px;font-weight:700}.details{display:grid;grid-template-columns:1fr 1fr;gap:22px 28px;padding:25px 26px}.label{margin-bottom:5px;color:#78867f;font-size:12px}.value{font-weight:650}.reference{font-family:ui-monospace,monospace}.room{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding-top:19px;border-top:1px solid #edf0ec}.room-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#edf4ef;font-size:22px}.room-sub{margin-top:3px;color:#77857e;font-size:13px}.total{margin-left:auto;text-align:right}.total .value{font-size:19px}.notice{margin-top:17px;padding:15px 17px;border-radius:11px;background:#edf4f0;color:#52675d;font-size:13px}.notice strong{color:#29483b}.actions{display:flex;justify-content:center;gap:11px;flex-wrap:wrap;margin-top:23px}.button{padding:12px 18px;border:1px solid #d9e1db;border-radius:9px;background:#fff;color:#254238;text-decoration:none;font:600 14px system-ui;cursor:pointer}.button.primary{border-color:#173d31;background:#173d31;color:#fff}.help{margin-top:24px;color:#87918b;text-align:center;font-size:12px}.help a{color:#386e54;font-weight:650}@media(max-width:560px){main{margin:35px auto}.card-head{align-items:flex-start;flex-direction:column;gap:10px;padding:19px}.details{gap:20px 12px;padding:20px}.room{flex-wrap:wrap}.total{margin-left:60px;text-align:left}.actions{flex-direction:column}.button{text-align:center}}@media print{body{background:white}.topbar,.actions,.help{display:none}main{margin:20px auto}.card{box-shadow:none}}
+	</style>
+</head>
+<body>
+	<header class="topbar"><a class="brand" href="../../index.html"><span class="mark" aria-hidden="true">E</span>Everpine Hotel</a><a href="../../dashboard/dashboard.html">My account</a></header>
+	<main>
+		<section class="hero" aria-labelledby="page-title"><div class="check" aria-hidden="true">✓</div><div class="eyebrow">Reservation complete</div><h1 id="page-title">Your stay is confirmed!</h1><p>Thank you for choosing Everpine Hotel. Your booking details are below.</p></section>
+		<section class="card" aria-labelledby="summary-title">
+			<div class="card-head"><h2 id="summary-title">Booking summary</h2><span class="badge">Confirmed</span></div>
+			<div class="details" aria-live="polite">
+				<div><div class="label">Confirmation number</div><div class="value reference" id="booking-reference">—</div></div>
+				<div><div class="label">Guest</div><div class="value" id="guest-name">—</div></div>
+				<div><div class="label">Check-in</div><div class="value" id="check-in">—</div></div>
+				<div><div class="label">Check-out</div><div class="value" id="check-out">—</div></div>
+				<div><div class="label">Guests</div><div class="value" id="guest-count">—</div></div>
+				<div class="room"><div class="room-icon" aria-hidden="true">⌂</div><div><div class="value" id="room-name">Reserved room</div><div class="room-sub" id="night-count">Reservation confirmed.</div></div><div class="total"><div class="label">Total</div><div class="value" id="booking-total">—</div></div></div>
+			</div>
+		</section>
+		<div class="notice"><strong>What’s next?</strong> A confirmation email with your reservation details will be sent to the email address on your booking. Keep your confirmation number handy when you arrive.</div>
+		<div class="actions"><a class="button primary" id="details-link" href="booking-details.html">View booking details</a><button class="button" type="button" onclick="window.print()">Print confirmation</button><a class="button" href="../../index.html">Return to home</a></div>
+		<p class="help">Need help? <a href="mailto:reservations@everpine.example">Contact reservations</a></p>
+	</main>
+	<script>
+		(()=>{
+			const params=new URLSearchParams(location.search),id=params.get('booking_id')||params.get('id');
+			const date=value=>{if(!value)return '—';const d=new Date(String(value).slice(0,10)+'T12:00:00');return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(d)};
+			const money=(amount,currency='USD')=>{if(amount==null||amount==='')return '—';try{return new Intl.NumberFormat(undefined,{style:'currency',currency}).format(Number(amount))}catch{return `${currency} ${amount}`}};
+			function render(payload){const b=payload.data||payload.booking||payload,checkIn=b.check_in||b.checkin_date,checkOut=b.check_out||b.checkout_date,nights=b.nights??(checkIn&&checkOut?Math.max(0,Math.round((new Date(checkOut)-new Date(checkIn))/86400000)):0),guests=Number(b.guests||b.guest_count||1);const values={'booking-reference':b.reference||b.booking_reference||`BK-${b.id||id||'CONFIRMED'}`,'guest-name':b.guest_name||b.guest?.name||'Guest','check-in':date(checkIn),'check-out':date(checkOut),'guest-count':`${guests} guest${guests===1?'':'s'}`,'room-name':b.room_name||b.room?.name||'Reserved room','night-count':nights?`${nights} night${nights===1?'':'s'} · Reservation confirmed`:'Reservation confirmed','booking-total':money(b.total_amount??b.total??b.amount,b.currency||'USD')};Object.entries(values).forEach(([key,value])=>document.getElementById(key).textContent=value)}
+			if(id){document.getElementById('details-link').href=`booking-details.html?id=${encodeURIComponent(id)}`;fetch(`/api/bookings/${encodeURIComponent(id)}`,{headers:{Accept:'application/json'},credentials:'same-origin'}).then(r=>{if(!r.ok)throw Error('Booking unavailable');return r.json()}).then(render).catch(()=>document.getElementById('booking-reference').textContent=`BK-${id}`)}
+		})();
+	</script>
+</body>
+</html>
