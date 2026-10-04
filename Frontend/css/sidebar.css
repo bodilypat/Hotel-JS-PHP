@@ -1,0 +1,266 @@
+/* Sidebar navigation for the hotel management dashboard. */
+
+:root {
+	--sidebar-width: 260px;
+	--sidebar-collapsed-width: 76px;
+	--sidebar-bg: #172b4d;
+	--sidebar-bg-deep: #12213b;
+	--sidebar-text: #cbd5e1;
+	--sidebar-muted: #91a1b8;
+	--sidebar-accent: #d6aa61;
+	--sidebar-hover: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar {
+	position: fixed;
+	inset: 0 auto 0 0;
+	z-index: 1000;
+	display: flex;
+	flex-direction: column;
+	width: var(--sidebar-width);
+	height: 100vh;
+	height: 100dvh;
+	overflow: hidden;
+	color: var(--sidebar-text);
+	background: linear-gradient(180deg, var(--sidebar-bg), var(--sidebar-bg-deep));
+	box-shadow: 6px 0 24px rgba(15, 30, 52, 0.14);
+	transition: width 220ms ease, transform 220ms ease;
+}
+
+.sidebar__header {
+	display: flex;
+	align-items: center;
+	min-height: 76px;
+	padding: 16px 22px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar__brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+	color: #fff;
+	font-size: 1.05rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.sidebar__brand-mark {
+	display: grid;
+	flex: 0 0 40px;
+	width: 40px;
+	height: 40px;
+	place-items: center;
+	color: var(--sidebar-bg-deep);
+	background: var(--sidebar-accent);
+	border-radius: 12px;
+	font-weight: 800;
+}
+
+.sidebar__nav {
+	flex: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 20px 12px;
+	scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+	scrollbar-width: thin;
+}
+
+.sidebar__section + .sidebar__section {
+	margin-top: 24px;
+}
+
+.sidebar__section-title {
+	margin: 0 12px 9px;
+	color: var(--sidebar-muted);
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.sidebar__menu {
+	display: grid;
+	gap: 4px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sidebar__link {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	min-height: 46px;
+	padding: 0 13px;
+	overflow: hidden;
+	color: var(--sidebar-text);
+	border-radius: 9px;
+	text-decoration: none;
+	transition: color 160ms ease, background-color 160ms ease;
+}
+
+.sidebar__link:hover,
+.sidebar__link:focus-visible {
+	color: #fff;
+	background: var(--sidebar-hover);
+	outline: none;
+}
+
+.sidebar__link[aria-current="page"],
+.sidebar__link.is-active {
+	color: #fff;
+	background: rgba(214, 170, 97, 0.16);
+	font-weight: 600;
+}
+
+.sidebar__link[aria-current="page"]::before,
+.sidebar__link.is-active::before {
+	position: absolute;
+	inset: 9px auto 9px 0;
+	width: 3px;
+	background: var(--sidebar-accent);
+	border-radius: 0 3px 3px 0;
+	content: "";
+}
+
+.sidebar__icon {
+	display: grid;
+	flex: 0 0 22px;
+	width: 22px;
+	place-items: center;
+	font-size: 1.05rem;
+}
+
+.sidebar__label {
+	overflow: hidden;
+	font-size: 0.9rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sidebar__badge {
+	margin-left: auto;
+	padding: 3px 7px;
+	color: #fff;
+	background: #c65353;
+	border-radius: 999px;
+	font-size: 0.68rem;
+	font-weight: 700;
+}
+
+.sidebar__footer {
+	padding: 14px 12px 18px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar__user {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	min-width: 0;
+	padding: 8px 9px;
+	color: #fff;
+	border-radius: 9px;
+	text-decoration: none;
+}
+
+.sidebar__user:hover,
+.sidebar__user:focus-visible {
+	background: var(--sidebar-hover);
+	outline: none;
+}
+
+.sidebar__avatar {
+	flex: 0 0 36px;
+	width: 36px;
+	height: 36px;
+	object-fit: cover;
+	border: 2px solid rgba(255, 255, 255, 0.25);
+	border-radius: 50%;
+}
+
+.sidebar__user-details {
+	display: grid;
+	min-width: 0;
+	gap: 3px;
+}
+
+.sidebar__user-name,
+.sidebar__user-role {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sidebar__user-name {
+	font-size: 0.82rem;
+	font-weight: 600;
+}
+
+.sidebar__user-role {
+	color: var(--sidebar-muted);
+	font-size: 0.72rem;
+}
+
+.sidebar.is-collapsed {
+	width: var(--sidebar-collapsed-width);
+}
+
+.sidebar.is-collapsed .sidebar__brand-name,
+.sidebar.is-collapsed .sidebar__section-title,
+.sidebar.is-collapsed .sidebar__label,
+.sidebar.is-collapsed .sidebar__badge,
+.sidebar.is-collapsed .sidebar__user-details {
+	display: none;
+}
+
+.sidebar.is-collapsed .sidebar__header,
+.sidebar.is-collapsed .sidebar__link,
+.sidebar.is-collapsed .sidebar__user {
+	justify-content: center;
+}
+
+.sidebar.is-collapsed .sidebar__link,
+.sidebar.is-collapsed .sidebar__user {
+	padding-inline: 8px;
+}
+
+@media (max-width: 768px) {
+	.sidebar {
+		width: min(var(--sidebar-width), 84vw);
+		transform: translateX(-100%);
+	}
+
+	.sidebar.is-open {
+		transform: translateX(0);
+	}
+
+	.sidebar.is-collapsed {
+		width: min(var(--sidebar-width), 84vw);
+	}
+
+	.sidebar.is-collapsed .sidebar__brand-name,
+	.sidebar.is-collapsed .sidebar__section-title,
+	.sidebar.is-collapsed .sidebar__label,
+	.sidebar.is-collapsed .sidebar__badge,
+	.sidebar.is-collapsed .sidebar__user-details {
+		display: initial;
+	}
+
+	.sidebar.is-collapsed .sidebar__header,
+	.sidebar.is-collapsed .sidebar__link,
+	.sidebar.is-collapsed .sidebar__user {
+		justify-content: flex-start;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sidebar,
+	.sidebar__link {
+		transition: none;
+	}
+}
+
