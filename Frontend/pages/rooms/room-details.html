@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room Details</title>
+    <style>
+      :root {
+        --bg: #f6f1ea;
+        --panel: #fffdfb;
+        --card: #ffffff;
+        --text: #1d1d1d;
+        --muted: #6b6a6a;
+        --line: #e8dfd6;
+        --primary: #b67b3a;
+        --primary-dark: #8f5c29;
+        --success: #2f8f68;
+        --shadow: 0 18px 40px rgba(27, 26, 25, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      :focus-visible {
+        outline: 3px solid rgba(182, 123, 58, 0.5);
+        outline-offset: 3px;
+      }
+
+      .container {
+        width: min(1200px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        background: #f8f4ef;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .topbar-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 72px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #d7a35d);
+        position: relative;
+        box-shadow: 0 8px 18px rgba(143, 92, 41, 0.2);
+      }
+
+      .brand-mark::before {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .nav a:hover {
+        color: var(--primary-dark);
+      }
+
+      .nav-cta {
+        padding: 8px 12px;
+        background: #eaf5ef;
+        border-radius: 999px;
+        white-space: nowrap;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .page {
+        padding: 28px 0 48px;
+      }
+
+      .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--primary-dark);
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(32px, 3vw, 46px);
+        line-height: 1.08;
+      }
+
+      .rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .stars {
+        color: #f0b94a;
+        letter-spacing: 2px;
+        font-size: 16px;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: 1.7fr 0.9fr;
+        gap: 16px;
+        margin-bottom: 26px;
+      }
+
+      .main-photo {
+        border-radius: 26px;
+        overflow: hidden;
+        height: 440px;
+        box-shadow: var(--shadow);
+      }
+
+      .main-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .thumbs {
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .thumb {
+        overflow: hidden;
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.9fr);
+        gap: 28px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      .section-title {
+        margin: 0 0 18px;
+        font-size: 22px;
+      }
+
+      .description {
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 16px;
+        margin: 0 0 24px;
+      }
+
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 0 0 24px;
+      }
+
+      .meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f6efe8;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .meta-pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--success);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 20px;
+      }
+
+      .feature {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        color: var(--text);
+      }
+
+      .feature-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: #f8efe5;
+        color: var(--primary-dark);
+        font-size: 18px;
+      }
+
+      .feature span:last-child {
+        font-weight: 600;
+      }
+
+      .booking-card {
+        position: sticky;
+        top: 18px;
+      }
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 18px;
+      }
+
+      .price {
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .price small {
+        font-size: 16px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .status {
+        color: var(--success);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .booking-form {
+        display: grid;
+        gap: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px 16px;
+        font-size: 15px;
+        color: var(--text);
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--primary);
+        outline: 2px solid rgba(182, 123, 58, 0.18);
+      }
+
+      .date-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .booking-note {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .cta {
+        margin-top: 6px;
+        border: 0;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        font-weight: 700;
+        padding: 16px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+
+      .cta:hover {
+        transform: translateY(-1px);
+      }
+
+      .summary {
+        display: grid;
+        gap: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        margin-top: 12px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+      }
+
+      .summary-row strong {
+        color: var(--text);
+      }
+
+      .guest-review {
+        margin-top: 26px;
+      }
+
+      .reviews {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .review {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .review-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d9b98b, #a7713e);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .person-name {
+        font-weight: 700;
+      }
+
+      .review-text {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media (max-width: 880px) {
+        .gallery,
+        .content-grid,
+        .reviews {
+          grid-template-columns: 1fr;
+        }
+
+        .thumbs {
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: unset;
+        }
+
+        .thumb {
+          height: 150px;
+        }
+
+        .booking-card {
+          position: static;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .nav {
+          display: none;
+        }
+
+        .room-header {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .date-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand" aria-label="Hotel brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Harbor House</span>
+        </div>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#overview">Overview</a>
+          <a href="#amenities">Amenities</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#booking" class="nav-cta">Reserve</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="container">
+        <div class="room-header">
+          <div>
+            <span class="eyebrow">Deluxe suite</span>
+            <h1>Ocean View Signature Room</h1>
+          </div>
+
+          <div class="rating" aria-label="Rated 4.9 out of 5 stars">
+            <span class="stars">★★★★★</span>
+            <span>4.9 · 128 reviews</span>
+          </div>
+        </div>
+
+        <section class="gallery" aria-label="Room gallery">
+          <div class="main-photo">
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80" alt="Luxury bedroom with large windows" />
+          </div>
+          <div class="thumbs" aria-label="Additional room photos">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80" alt="Modern bathroom" />
+            </div>
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80" alt="Room view from bed" />
+            </div>
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80" alt="Living area and lounge" />
+            </div>
+          </div>
+        </section>
+
+        <div class="content-grid">
+          <div>
+            <section class="panel" id="overview">
+              <h2 class="section-title">Room overview</h2>
+              <p class="description">
+                Spacious and elegantly designed, this signature room offers a calming coastal aesthetic with handcrafted finishes,
+                plush bedding, and a panoramic ocean view that brings the outside in. Ideal for romantic getaways, productive retreats,
+                or a long, restorative stay in the heart of the city.
+              </p>
+
+              <div class="meta-row" aria-label="Room details">
+                <div class="meta-pill"><span class="dot"></span> 2 Guests</div>
+                <div class="meta-pill"><span class="dot"></span> 1 King Bed</div>
+                <div class="meta-pill"><span class="dot"></span> 36 m²</div>
+                <div class="meta-pill"><span class="dot"></span> Free cancellation</div>
+              </div>
+
+              <h2 class="section-title" id="amenities">Amenities</h2>
+              <div class="features" aria-label="Room amenities">
+                <div class="feature">
+                  <div class="feature-icon">☕</div>
+                  <span>Complimentary coffee bar</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">📶</div>
+                  <span>High-speed Wi-Fi</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">📺</div>
+                  <span>Smart 4K TV</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🛁</div>
+                  <span>Rain shower bathroom</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🧺</div>
+                  <span>Fresh linen daily</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🌴</div>
+                  <span>Private balcony</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🚿</div>
+                  <span>In-room bath amenities</span>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🛎️</div>
+                  <span>24/7 concierge</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel guest-review" id="reviews">
+              <h2 class="section-title">Guest reviews</h2>
+              <div class="reviews">
+                <article class="review">
+                  <div class="review-head">
+                    <div class="person">
+                      <div class="avatar">EM</div>
+                      <div class="person-name">Emma M.</div>
+                    </div>
+                    <div class="stars" aria-label="5 star review">★★★★★</div>
+                  </div>
+                  <p class="review-text">
+                    “The room was stunning, spotless, and the ocean view made our stay unforgettable. Staff were thoughtful and the bed was incredibly comfortable.”
+                  </p>
+                </article>
+
+                <article class="review">
+                  <div class="review-head">
+                    <div class="person">
+                      <div class="avatar">RL</div>
+                      <div class="person-name">Ryan L.</div>
+                    </div>
+                    <div class="stars" aria-label="5 star review">★★★★★</div>
+                  </div>
+                  <p class="review-text">
+                    “Beautiful details, strong Wi-Fi, and a quiet location. We loved the balcony and the quick service from the concierge team.”
+                  </p>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <aside class="panel booking-card" id="booking" aria-label="Booking summary">
+            <div class="price-row">
+              <div>
+                <div class="price">$290<small>/night</small></div>
+              </div>
+              <div class="status">Available</div>
+            </div>
+
+            <form class="booking-form" action="../booking/booking.html" method="get">
+              <input type="hidden" name="room_name" value="Ocean View Signature Room" />
+              <input type="hidden" name="room_rate" value="290" />
+              <div class="field">
+                <label for="guests">Guests</label>
+                <select id="guests" name="guests" required>
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                </select>
+              </div>
+
+              <div class="date-row">
+                <div class="field">
+                  <label for="checkin">Check in</label>
+                  <input id="checkin" name="check_in" type="date" required />
+                </div>
+                <div class="field">
+                  <label for="checkout">Check out</label>
+                  <input id="checkout" name="check_out" type="date" required />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="package">Rate plan</label>
+                <select id="package" name="rate_plan">
+                  <option value="flexible">Flexible stay</option>
+                  <option value="breakfast">Breakfast included</option>
+                  <option value="airport_transfer">Airport transfer</option>
+                </select>
+              </div>
+
+              <button class="cta" type="submit">Reserve your stay</button>
+              <div class="booking-note">No payment required today. You can cancel for free up to 48 hours before arrival.</div>
+            </form>
+
+            <div class="summary" aria-live="polite" aria-label="Price breakdown">
+              <div class="summary-row"><span>Room rate</span><strong id="room-subtotal">$870 for 3 nights</strong></div>
+              <div class="summary-row"><span>Taxes & fees</span><strong id="taxes">$87</strong></div>
+              <div class="summary-row"><span>Service fee</span><strong id="service-fee">$24</strong></div>
+              <div class="summary-row"><span>Total</span><strong id="total">$981</strong></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script>
+    const checkin = document.getElementById("checkin");
+    const checkout = document.getElementById("checkout");
+    const bookingForm = document.querySelector(".booking-form");
+    const nightlyRate = Number(document.querySelector('[name="room_rate"]').value);
+    const serviceFee = 24;
+
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const defaultCheckout = new Date(tomorrow);
+    defaultCheckout.setDate(defaultCheckout.getDate() + 3);
+    checkin.min = formatDate(today);
+    checkin.value = formatDate(tomorrow);
+    checkout.min = formatDate(defaultCheckout);
+    checkout.value = formatDate(defaultCheckout);
+
+    function updateQuote() {
+      const arrival = new Date(`${checkin.value}T00:00:00`);
+      const departure = new Date(`${checkout.value}T00:00:00`);
+      const nights = Math.round((departure - arrival) / 86400000);
+      const validDates = Number.isFinite(nights) && nights > 0;
+
+      checkout.min = checkin.value || formatDate(today);
+      checkout.setCustomValidity(validDates || !checkout.value ? "" : "Check-out must be after check-in.");
+      document.getElementById("room-subtotal").textContent = validDates
+        ? `$${nightlyRate * nights} for ${nights} ${nights === 1 ? "night" : "nights"}`
+        : "Select valid dates";
+      document.getElementById("taxes").textContent = validDates
+        ? `$${Math.round(nightlyRate * nights * 0.1)}`
+        : "—";
+      document.getElementById("total").textContent = validDates
+        ? `$${nightlyRate * nights + Math.round(nightlyRate * nights * 0.1) + serviceFee}`
+        : "—";
+    }
+
+    checkin.addEventListener("change", () => {
+      const nextDay = new Date(`${checkin.value}T00:00:00`);
+      nextDay.setDate(nextDay.getDate() + 1);
+      checkout.min = formatDate(nextDay);
+      if (checkout.value && checkout.value <= checkin.value) {
+        checkout.value = formatDate(nextDay);
+      }
+      updateQuote();
+    });
+    checkout.addEventListener("change", updateQuote);
+    bookingForm.addEventListener("submit", (event) => {
+      if (!bookingForm.reportValidity()) event.preventDefault();
+    });
+    updateQuote();
+  </script>
+</html>
