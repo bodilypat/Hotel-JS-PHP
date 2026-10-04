@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guests</title>
+    <style>
+      :root {
+        --bg: #f7f2ea;
+        --card: #fffdfb;
+        --primary: #7a4d39;
+        --primary-dark: #5d382d;
+        --accent: #d7b28a;
+        --text: #2f241f;
+        --muted: #6e5d56;
+        --line: #eadcc9;
+        --success: #6e9f7a;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #f9f3ee 0%, #f4e8dd 100%);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--primary-dark);
+      }
+
+      nav {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 28px;
+        align-items: center;
+        padding: 24px 0 36px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 12px;
+        background: rgba(122, 77, 57, 0.08);
+        color: var(--primary);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0 0 16px;
+        font-size: clamp(2.3rem, 5vw, 4rem);
+        line-height: 1.05;
+      }
+
+      .lead {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+        max-width: 60ch;
+        margin-bottom: 28px;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 22px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 18px rgba(122, 77, 57, 0.18);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary-dark);
+        border: 1px solid var(--line);
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(122, 77, 57, 0.08);
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 20px 40px rgba(65, 38, 26, 0.06);
+      }
+
+      .event-box {
+        background: linear-gradient(180deg, #fffaf5 0%, #f7efe6 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+      }
+
+      .event-date {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--primary);
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .event-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 0 12px;
+      }
+
+      .event-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin: 44px 0 22px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+      }
+
+      .badge {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(110, 159, 122, 0.12);
+        color: var(--success);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .guest-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .guest-tools {
+        display: flex;
+        gap: 12px;
+        margin: 0 0 20px;
+        align-items: center;
+      }
+
+      .guest-tools input,
+      .guest-tools select {
+        min-width: 0;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+        color: var(--text);
+        font: inherit;
+      }
+
+      .guest-tools input { flex: 1; }
+      .guest-tools button,
+      .guest-actions button,
+      .guest-form button {
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+        color: var(--primary-dark);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .guest-tools button { background: var(--primary); color: white; white-space: nowrap; }
+      .guest-tools button:hover, .guest-form button[type="submit"] { background: var(--primary-dark); color: white; }
+      .guest-actions { display: flex; gap: 8px; padding: 0 18px 18px; }
+      .guest-actions .delete-guest { color: #9b3f35; }
+      .guest-tools button:focus-visible,
+      .guest-actions button:focus-visible,
+      .guest-form input:focus,
+      .guest-form select:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
+      .api-message { min-height: 1.2em; margin: -8px 0 14px; color: var(--muted); font-size: .9rem; }
+      .guest-dialog {
+        width: min(520px, calc(100% - 32px));
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        color: var(--text);
+        background: var(--card);
+      }
+      .guest-dialog::backdrop { background: rgba(47, 36, 31, .5); }
+      .guest-dialog h2 { margin: 0 0 18px; }
+      .guest-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .guest-form label { display: grid; gap: 6px; color: var(--muted); font-size: .9rem; font-weight: 700; }
+      .guest-form input, .guest-form select {
+        width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid var(--line);
+        border-radius: 9px; background: white; color: var(--text); font: inherit;
+      }
+      .guest-form .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+      .guest-tools input:focus,
+      .guest-tools select:focus,
+      a:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .empty-state {
+        display: none;
+        padding: 24px;
+        border: 1px dashed var(--line);
+        border-radius: 16px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .guest-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(58, 38, 29, 0.04);
+      }
+
+      .avatar {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: white;
+        letter-spacing: 0.04em;
+      }
+
+      .avatar.one { background: linear-gradient(135deg, #b9734d, #7a4d39); }
+      .avatar.two { background: linear-gradient(135deg, #c6a66e, #8e6f42); }
+      .avatar.three { background: linear-gradient(135deg, #7e9c89, #49665a); }
+      .avatar.four { background: linear-gradient(135deg, #d18975, #965a4f); }
+      .avatar.five { background: linear-gradient(135deg, #8aa4c5, #5d6e89); }
+      .avatar.six { background: linear-gradient(135deg, #a07786, #6f4b5a); }
+
+      .guest-content {
+        padding: 20px 18px 22px;
+      }
+
+      .guest-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .guest-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .tag {
+        padding: 5px 8px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+      }
+
+      .tag.vip { background: rgba(216, 178, 138, 0.22); color: #8d6130; }
+      .tag.family { background: rgba(110, 159, 122, 0.15); color: #446d52; }
+      .tag.friend { background: rgba(122, 77, 57, 0.08); color: var(--primary); }
+
+      .guest-role {
+        color: var(--muted);
+        margin: 0 0 10px;
+        font-size: 0.96rem;
+      }
+
+      .guest-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .guest-status {
+        font-weight: 700;
+        color: var(--success);
+      }
+
+      .summary {
+        margin-top: 38px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .stat {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+      }
+
+      .stat-number {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      @media (max-width: 860px) {
+        .hero,
+        .guest-grid,
+        .summary {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar,
+        .section-heading {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .guest-tools { flex-direction: column; }
+        .guest-tools input,
+        .guest-tools select,
+        .guest-tools button { width: 100%; }
+        .guest-form { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="topbar">
+        <div class="brand">Hotel Guest Services</div>
+        <nav>
+          <a href="#overview">Overview</a>
+          <a href="#attendees">Attendees</a>
+          <a href="#details">Details</a>
+          <a href="#rsvp">RSVP</a>
+        </nav>
+      </header>
+
+      <section class="hero" id="overview">
+        <div>
+          <div class="eyebrow">Guest management</div>
+          <h1>Welcome every guest with confidence.</h1>
+          <p class="lead">
+            Keep track of arrivals, room assignments, and guest status from one simple dashboard.
+            Find the details your team needs to make every stay exceptional.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#attendees">View guest list</a>
+            <a class="btn btn-secondary" href="mailto:frontdesk@example.com?subject=Guest%20services">Contact front desk</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="event-box">
+            <div class="event-date">Today · Guest operations</div>
+            <p class="event-name">The Riverside Hotel</p>
+            <div class="event-meta">
+              <span>📍 Riverside District</span>
+              <span>🛎️ Front desk open 24 hours</span>
+              <span>🛏️ Arrivals, in-house stays & departures</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-heading" id="attendees">
+        <h2>Guest directory</h2>
+        <span class="badge">6 guest records</span>
+      </div>
+
+      <div class="guest-tools" role="search" aria-label="Search and filter guests">
+        <input id="guest-search" type="search" placeholder="Search by guest, room, or reservation…" aria-label="Search guests" />
+        <select id="status-filter" aria-label="Filter guests by stay status">
+          <option value="all">All stay statuses</option>
+          <option value="checked in">Checked in</option>
+          <option value="expected">Expected</option>
+          <option value="checked out">Checked out</option>
+        </select>
+        <select id="guest-sort" aria-label="Sort guests">
+          <option value="name">Sort by name</option>
+          <option value="room">Sort by room</option>
+          <option value="status">Sort by status</option>
+        </select>
+        <button id="add-guest" type="button">+ Add guest</button>
+      </div>
+      <p class="api-message" id="api-message" role="status" aria-live="polite"></p>
+
+      <section class="guest-grid" id="guest-list" aria-label="Hotel guests">
+        <article class="guest-card">
+          <div class="avatar one">AR</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Alicia Reed</h3>
+              <span class="tag vip">VIP</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2048 · Deluxe King</p>
+            <div class="guest-meta">
+              <span>Room 204</span>
+              <span class="guest-status">Checked in</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="guest-card">
+          <div class="avatar two">MR</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Marcus Reed</h3>
+              <span class="tag family">Family</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2051 · Standard Twin</p>
+            <div class="guest-meta">
+              <span>Room 118</span>
+              <span class="guest-status">Expected</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="guest-card">
+          <div class="avatar three">SL</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Sofia Lane</h3>
+              <span class="tag friend">Friend</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2054 · Executive Suite</p>
+            <div class="guest-meta">
+              <span>Room 502</span>
+              <span class="guest-status">Checked in</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="guest-card">
+          <div class="avatar four">DH</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Daniel Hart</h3>
+              <span class="tag vip">VIP</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2037 · Deluxe Queen</p>
+            <div class="guest-meta">
+              <span>Room 316</span>
+              <span class="guest-status">Checked out</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="guest-card">
+          <div class="avatar five">EP</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Emma Price</h3>
+              <span class="tag family">Family</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2058 · Standard Queen</p>
+            <div class="guest-meta">
+              <span>Room 229</span>
+              <span class="guest-status">Expected</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="guest-card">
+          <div class="avatar six">JT</div>
+          <div class="guest-content">
+            <div class="guest-top">
+              <h3 class="guest-name">Jordan Tate</h3>
+              <span class="tag friend">Friend</span>
+            </div>
+            <p class="guest-role">Reservation #RH-2044 · Family Suite</p>
+            <div class="guest-meta">
+              <span>Room 410</span>
+              <span class="guest-status">Checked in</span>
+            </div>
+          </div>
+        </article>
+      </section>
+      <p class="empty-state" id="empty-state" role="status">No guests match your search. Try another name, room, or status.</p>
+
+      <section class="summary" id="details">
+        <div class="stat">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Guest records</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Currently checked in</div>
+        </div>
+        <div class="stat" id="rsvp">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Expected arrivals</div>
+        </div>
+      </section>
+    </div>
+    <dialog class="guest-dialog" id="guest-dialog" aria-labelledby="guest-dialog-title">
+      <h2 id="guest-dialog-title">Add guest</h2>
+      <form class="guest-form" id="guest-form">
+        <input type="hidden" name="id" />
+        <label>Guest name<input name="name" required maxlength="100" /></label>
+        <label>Category<select name="category"><option>VIP</option><option>Family</option><option>Friend</option></select></label>
+        <label>Reservation number<input name="reservation" required maxlength="40" /></label>
+        <label>Room type<input name="roomType" required maxlength="60" /></label>
+        <label>Room number<input name="room" required maxlength="20" /></label>
+        <label>Stay status<select name="status"><option>Expected</option><option>Checked in</option><option>Checked out</option></select></label>
+        <div class="form-actions">
+          <button type="button" id="cancel-guest">Cancel</button>
+          <button type="submit">Save guest</button>
+        </div>
+      </form>
+    </dialog>
+    <script>
+      const guestSearch = document.getElementById("guest-search");
+      const statusFilter = document.getElementById("status-filter");
+      const guestList = document.getElementById("guest-list");
+      const guestSort = document.getElementById("guest-sort");
+      const getCards = () => Array.from(guestList.querySelectorAll(".guest-card"));
+      const emptyState = document.getElementById("empty-state");
+      const guestDialog = document.getElementById("guest-dialog");
+      const guestForm = document.getElementById("guest-form");
+      const apiMessage = document.getElementById("api-message");
+      const apiUrl = "../../../backend/routes/guests.php";
+      let backendConnected = false;
+
+      const defaultGuests = [
+        { id: "local-1", name: "Alicia Reed", category: "VIP", reservation: "RH-2048", roomType: "Deluxe King", room: "204", status: "Checked in" },
+        { id: "local-2", name: "Marcus Reed", category: "Family", reservation: "RH-2051", roomType: "Standard Twin", room: "118", status: "Expected" },
+        { id: "local-3", name: "Sofia Lane", category: "Friend", reservation: "RH-2054", roomType: "Executive Suite", room: "502", status: "Checked in" },
+        { id: "local-4", name: "Daniel Hart", category: "VIP", reservation: "RH-2037", roomType: "Deluxe Queen", room: "316", status: "Checked out" },
+        { id: "local-5", name: "Emma Price", category: "Family", reservation: "RH-2058", roomType: "Standard Queen", room: "229", status: "Expected" },
+        { id: "local-6", name: "Jordan Tate", category: "Friend", reservation: "RH-2044", roomType: "Family Suite", room: "410", status: "Checked in" }
+      ];
+
+      function normalizeGuest(raw = {}) {
+        const guest = {
+          id: raw.id ?? raw.guest_id ?? raw._id ?? "",
+          name: raw.name ?? raw.guest_name ?? "",
+          category: raw.category ?? "Friend",
+          reservation: raw.reservation ?? raw.reservation_number ?? "",
+          roomType: raw.roomType ?? raw.room_type ?? raw.roomtype ?? "",
+          room: raw.room ?? raw.room_number ?? raw.roomNo ?? "",
+          status: raw.status ?? "Expected"
+        };
+
+        guest.category = ["VIP", "Family", "Friend"].includes(guest.category) ? guest.category : "Friend";
+        guest.status = ["Expected", "Checked in", "Checked out"].includes(guest.status) ? guest.status : "Expected";
+        return guest;
+      }
+
+      function readGuest(card) {
+        const role = card.querySelector(".guest-role")?.textContent || "";
+        const roomNode = card.querySelector(".guest-meta span:first-child");
+        return {
+          id: card.dataset.id || "",
+          name: card.querySelector(".guest-name")?.textContent.trim() || "",
+          category: card.querySelector(".tag")?.textContent.trim() || "Friend",
+          reservation: (role.match(/Reservation\s*#([^·]+)/i) || ["", ""])[1].trim(),
+          roomType: (role.split("·")[1] || "").trim(),
+          room: roomNode ? roomNode.textContent.replace(/^Room\s*/i, "").trim() : "",
+          status: card.querySelector(".guest-status")?.textContent.trim() || "Expected"
+        };
+      }
+
+      function buildCard(guest) {
+        const normalized = normalizeGuest(guest);
+        const card = document.createElement("article");
+        card.className = "guest-card";
+        if (normalized.id) card.dataset.id = String(normalized.id);
+
+        const avatar = document.createElement("div");
+        const colors = ["one", "two", "three", "four", "five", "six"];
+        const initials = normalized.name.trim().split(/\s+/).filter(Boolean).map(word => word[0]).join("").slice(0, 2).toUpperCase() || "G";
+        const colorIndex = Array.from(normalized.name).reduce((sum, char) => sum + char.charCodeAt(0), 0) % colors.length;
+        avatar.className = `avatar ${colors[colorIndex]}`;
+        avatar.textContent = initials;
+
+        const content = document.createElement("div");
+        content.className = "guest-content";
+
+        const top = document.createElement("div");
+        top.className = "guest-top";
+
+        const name = document.createElement("h3");
+        name.className = "guest-name";
+        name.textContent = normalized.name;
+
+        const tag = document.createElement("span");
+        tag.className = `tag ${normalized.category.toLowerCase()}`;
+        tag.textContent = normalized.category;
+
+        top.append(name, tag);
+
+        const role = document.createElement("p");
+        role.className = "guest-role";
+        role.textContent = `Reservation #${normalized.reservation} · ${normalized.roomType}`;
+
+        const meta = document.createElement("div");
+        meta.className = "guest-meta";
+
+        const room = document.createElement("span");
+        room.textContent = `Room ${normalized.room}`;
+
+        const status = document.createElement("span");
+        status.className = "guest-status";
+        status.textContent = normalized.status;
+
+        meta.append(room, status);
+        content.append(top, role, meta);
+        card.append(avatar, content);
+        return card;
+      }
+
+      function addCardActions(card) {
+        if (card.querySelector(".guest-actions")) return;
+        if (!card.dataset.id) card.dataset.id = `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+        const actions = document.createElement("div");
+        actions.className = "guest-actions";
+
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "edit-guest";
+        edit.textContent = "Edit";
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "delete-guest";
+        remove.textContent = "Delete";
+
+        actions.append(edit, remove);
+        card.append(actions);
+      }
+
+      async function apiRequest(method, guest) {
+        const options = {
+          method,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        };
+
+        if (guest) options.body = JSON.stringify(guest);
+
+        const response = await fetch(apiUrl, options);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (response.status === 204) return null;
+
+        const body = await response.text();
+        return body ? JSON.parse(body) : null;
+      }
+
+      function updateSummary() {
+        const cards = getCards();
+        const numbers = document.querySelectorAll(".summary .stat-number");
+
+        numbers[0].textContent = cards.length;
+        numbers[1].textContent = cards.filter(card => readGuest(card).status.toLowerCase() === "checked in").length;
+        numbers[2].textContent = cards.filter(card => readGuest(card).status.toLowerCase() === "expected").length;
+        document.querySelector(".section-heading .badge").textContent = `${cards.length} guest records`;
+      }
+
+      function renderGuestCards(records) {
+        const cards = records.map(normalizeGuest).map(buildCard);
+        guestList.replaceChildren(...cards);
+        getCards().forEach(addCardActions);
+        updateSummary();
+        filterGuests();
+      }
+
+      async function loadGuests() {
+        try {
+          const result = await apiRequest("GET");
+          const rawRecords = Array.isArray(result) ? result : result && (result.guests || result.data);
+
+          if (!Array.isArray(rawRecords)) {
+            throw new Error("Unexpected API response");
+          }
+
+          backendConnected = true;
+          renderGuestCards(rawRecords);
+          apiMessage.textContent = "Guest records loaded from the hotel system.";
+        } catch (error) {
+          backendConnected = false;
+          renderGuestCards(defaultGuests);
+          apiMessage.textContent = "PHP backend unavailable; sample records are shown. Changes will apply to this page only.";
+        }
+      }
+
+      function openGuestForm(guest) {
+        guestForm.reset();
+        guestForm.elements.id.value = guest ? guest.id : "";
+        document.getElementById("guest-dialog-title").textContent = guest ? "Edit guest" : "Add guest";
+
+        if (guest) {
+          Object.entries(guest).forEach(([key, value]) => {
+            if (guestForm.elements[key]) guestForm.elements[key].value = value;
+          });
+        }
+
+        guestDialog.showModal();
+        guestForm.elements.name.focus();
+      }
+
+      function filterGuests() {
+        const query = guestSearch.value.trim().toLowerCase();
+        const status = statusFilter.value;
+        let visibleCount = 0;
+
+        const cards = getCards();
+        cards.sort((a, b) => {
+          const first = readGuest(a);
+          const second = readGuest(b);
+          const key = guestSort.value;
+          return String(first[key] || "").localeCompare(String(second[key] || ""), undefined, { numeric: true });
+        }).forEach(card => guestList.append(card));
+
+        cards.forEach((card) => {
+          const matchesQuery = card.textContent.toLowerCase().includes(query);
+          const matchesStatus = status === "all" || card.querySelector(".guest-status").textContent.trim().toLowerCase() === status;
+          const isVisible = matchesQuery && matchesStatus;
+          card.hidden = !isVisible;
+          if (isVisible) visibleCount += 1;
+        });
+
+        emptyState.style.display = visibleCount ? "none" : "block";
+      }
+
+      getCards().forEach(addCardActions);
+
+      document.getElementById("add-guest").addEventListener("click", () => openGuestForm(null));
+      document.getElementById("cancel-guest").addEventListener("click", () => guestDialog.close());
+
+      guestList.addEventListener("click", async event => {
+        const card = event.target.closest(".guest-card");
+        if (!card) return;
+
+        if (event.target.closest(".edit-guest")) {
+          openGuestForm(readGuest(card));
+          return;
+        }
+
+        if (!event.target.closest(".delete-guest")) return;
+
+        const guest = readGuest(card);
+        if (!confirm(`Delete ${guest.name}?`)) return;
+
+        try {
+          if (backendConnected) await apiRequest("DELETE", { id: guest.id });
+        } catch (error) {
+          apiMessage.textContent = "Could not delete this guest from the backend.";
+          return;
+        }
+
+        card.remove();
+        updateSummary();
+        filterGuests();
+      });
+
+      guestForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const values = Object.fromEntries(new FormData(guestForm));
+        const editing = Boolean(values.id);
+        const guest = { ...values, id: values.id || undefined };
+
+        try {
+          if (backendConnected) {
+            const result = await apiRequest(editing ? "PUT" : "POST", guest);
+            if (result && result.guest) guest.id = result.guest.id || guest.id;
+            else if (result && result.id) guest.id = result.id;
+          }
+        } catch (error) {
+          apiMessage.textContent = "Could not save guest to the backend; no changes were made.";
+          return;
+        }
+
+        if (editing) {
+          const current = getCards().find(card => card.dataset.id === values.id);
+          if (current) {
+            const replacement = buildCard(guest);
+            current.replaceWith(replacement);
+            addCardActions(replacement);
+          }
+        } else {
+          const card = buildCard(guest);
+          guestList.append(card);
+          addCardActions(card);
+        }
+
+        guestDialog.close();
+        updateSummary();
+        filterGuests();
+        apiMessage.textContent = backendConnected ? "Guest record saved." : "Guest saved for this page only.";
+      });
+
+      guestSearch.addEventListener("input", filterGuests);
+      statusFilter.addEventListener("change", filterGuests);
+      guestSort.addEventListener("change", filterGuests);
+      loadGuests();
+    </script>
+  </body>
+</html>
